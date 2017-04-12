@@ -76,24 +76,45 @@ d3.json("data/nyct2010_17a3_topo.json", function(error, nyb) {
   get_parks();
 
   var fresh_ctss = topojson.feature(nyb, nyb.objects.nyct2010_17a3).features;
-  ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
+  // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
+  d3.csv("data/communities.csv", function(error, comms)
+          {
 
-  cts.selectAll(".tract")
-      .data(ctss)
-      .enter().append("path")
-      .attr("class", "tract")
-      .attr("d", path)
-      .attr("id", function(d) {
-        return d.properties.BoroCT2010;})
-      .attr("nhd_name", function(d) {
-        return d.properties.NTAName;})
-      .style('fill', function(d){
-          console.log(d.properties.community)
-          return comm_colors[d.properties.community];})
-      .on("mouseover", handleMouseOver)
-      .on("mouseout", handleMouseOut)
-      .style('fill', function(d) {return comm_colors[d.properties.community]});
+              //prices is an array of json objects containing the data in from the csv
+              csv = comms.map(function(d)
+              {
+                  //each d is one line of the csv file represented as a json object
+                  // console.log("Label: " + d.CTLabel)
+                  return {"community": d.community, "label": d.BoroCT2010} ;
+              })
 
+              csv.forEach(function(d, i) {
+                fresh_ctss.forEach(function(e, j) {
+              if (d.label === e.properties.BoroCT2010) {
+
+                  e.properties.community = parseInt(d.community)
+                  }
+                })
+              })
+
+          cts.selectAll(".tract")
+              .data(fresh_ctss)
+              .enter().append("path")
+              .attr("class", "tract")
+              .attr("d", path)
+              .attr("id", function(d) {
+                return d.properties.BoroCT2010;})
+              .attr("nhd_name", function(d) {
+                return d.properties.NTAName;})
+              .style('fill', function(d){
+                  console.log(d.properties.community)
+                  return comm_colors[d.properties.community];})
+              .style("fill-opacity", .2)
+              .on("mouseover", handleMouseOver)
+              .on("mouseout", handleMouseOut)
+              .style('fill', function(d) {return comm_colors[d.properties.community]});
+
+        })
 
 })
 

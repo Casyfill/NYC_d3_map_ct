@@ -6,3 +6,5 @@ D3 map of NYC census tracts
 - [x] data table
 - [ ] CSV Data visualisation
 - [ ] Zoom
+- [ ] Population
+- [ ] filtration window

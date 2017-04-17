@@ -24,8 +24,8 @@ path.back {
 
 .tract {
   stroke: lightgrey;
-  fill-opacity:0;
   stroke-width: .5px;
+  fill-opacity: .8;
 }
 
 

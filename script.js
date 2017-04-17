@@ -1,9 +1,6 @@
 var max_width = 950,
     max_height = 700;
 
-//  Community colors
-var comm_colors = [ "red", "blue", "green", "yellow", "purple" ];
-var ƒ = d3.f;
 
 //  MAP
 var projection = d3.geoMercator()
@@ -17,14 +14,38 @@ var path = d3.geoPath()
 var svg = d3.select("#container")
   .append("svg")
   .attr("width", "100%")
-  .attr("height", max_height)
-  .append("g");
+  .attr("height", max_height);
 
 
   // geography
-  var parks = svg.append("g").attr('id','parks');
-  var bs = svg.append("g").attr('id','boros');
-  var cts = svg.append("g").attr('id','cts');
+  // var parks = svg.append("g").attr('id','parks');
+var bs = svg.append("g").attr('id','boros');
+var cts = svg.append("g").attr('id','cts');
+var t = textures.lines()
+          .size(3)
+          .strokeWidth(.5)
+          .stroke("white")
+          .background("grey");
+
+svg.call(t);
+
+//  Community colors
+var comm_colors = [ "red", "blue", "green", "yellow", "purple", 
+                    "red", "blue", "green", "yellow", "purple", 
+                    "red", "blue", "green", "yellow", "purple",
+                    "red", "blue", "green", "yellow", "purple",
+                    "red", "blue", "green", "yellow", "purple",
+                    "red", "blue", "green", "yellow", "purple"];
+var ƒ = d3.f;
+
+
+get_color = function(d) {
+  if(d.properties.hasOwnProperty('community')){
+    return comm_colors[d.properties.community];
+  } else {
+    return t.url()
+  }
+}
 
 
 // title
@@ -55,6 +76,7 @@ var tbody = table.append('tbody');
 
 
 
+
 function handleMouseOver(d, i) {  // Add interactivity
   nhd_name.text( d.properties.NTAName + ', ' + d.properties.BoroCT2010);
   populate_table(d,i);
@@ -68,14 +90,13 @@ function handleMouseOut(d, i) {
 
 //  LOAD DATA
 
-d3.json("data/nyct2010_17a3_topo.json", function(error, nyb) {
+d3.json("data/ct2010s.json", function(error, nyb) {
   console.log('tracts uploaded, v3')
 
   populate_empty_table();
-  get_boroughs();
-  get_parks();
+  // get_boroughs(nyb);
 
-  var fresh_ctss = topojson.feature(nyb, nyb.objects.nyct2010_17a3).features;
+  var fresh_ctss = topojson.feature(nyb, nyb.objects.ct2010).features;
   // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
   d3.csv("data/communities.csv", function(error, comms)
           {
@@ -85,13 +106,12 @@ d3.json("data/nyct2010_17a3_topo.json", function(error, nyb) {
               {
                   //each d is one line of the csv file represented as a json object
                   // console.log("Label: " + d.CTLabel)
-                  return {"community": d.community, "label": d.BoroCT2010} ;
+                  return {"community": d.community, "label": d.tract} ;
               })
 
               csv.forEach(function(d, i) {
                 fresh_ctss.forEach(function(e, j) {
-              if (d.label === e.properties.BoroCT2010) {
-
+              if (d.label === e.properties.geoid) {
                   e.properties.community = parseInt(d.community)
                   }
                 })
@@ -103,16 +123,20 @@ d3.json("data/nyct2010_17a3_topo.json", function(error, nyb) {
               .attr("class", "tract")
               .attr("d", path)
               .attr("id", function(d) {
-                return d.properties.BoroCT2010;})
+                return d.properties.geoid;})
               .attr("nhd_name", function(d) {
                 return d.properties.NTAName;})
-              .style('fill', function(d){
-                  console.log(d.properties.community)
-                  return comm_colors[d.properties.community];})
-              .style("fill-opacity", .2)
               .on("mouseover", handleMouseOver)
               .on("mouseout", handleMouseOut)
-              .style('fill', function(d) {return comm_colors[d.properties.community]});
+              .style('fill', function(d) { return get_color(d)})
+
+          bs.selectAll(".boro")
+              .data(topojson.merge(nyb, nyb.objects.ct2010.geometries))
+              .enter().append("path")
+              .attr("class", "boro")
+              .attr("d", path)
+
+          console.log('boroughs created')
 
         })
 
@@ -126,9 +150,8 @@ d3.select(window).on('resize', sizeChange);
 
 function sizeChange() {
       var mwidth  = Math.min($("#container").width(), max_width);
-      console.log(mwidth)
+      // console.log(mwidth)
       d3.select("svg").attr("transform", "scale(" + mwidth/700 + ")");
       $("svg").height(Math.min($("#container").width()*.86, max_height));
-
 
 }

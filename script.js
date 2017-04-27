@@ -1,7 +1,7 @@
 var max_width = 950,
     max_height = 700;
-
-
+    
+console.log('Its me, your old script!')
 //  MAP
 var projection = d3.geoMercator()
   .center([-73.94, 40.70])
@@ -11,7 +11,7 @@ var projection = d3.geoMercator()
 var path = d3.geoPath()
     .projection(projection);
 
-var svg = d3.select("#container")
+var svg = d3.select("#svg-container")
   .append("svg")
   .attr("width", "100%")
   .attr("height", max_height);
@@ -30,12 +30,12 @@ var t = textures.lines()
 svg.call(t);
 
 //  Community colors
-var comm_colors = [ "red", "blue", "green", "yellow", "purple", 
-                    "red", "blue", "green", "yellow", "purple", 
-                    "red", "blue", "green", "yellow", "purple",
-                    "red", "blue", "green", "yellow", "purple",
-                    "red", "blue", "green", "yellow", "purple",
-                    "red", "blue", "green", "yellow", "purple"];
+var comm_colors = [ "red", "blue", "green", "yellow", "purple",
+                    "orange", "teal", "pink", "steelblue", 'magenta',
+                    "black", "grey", "darkgreen", "darkred", "darkblue",
+                    "lime", "beige", "azure", "aliceblue", 'burlywood', 
+                    "darkseagreen", 'darkslategray', 'forestgreen', 'khaki','lightsalmon',
+                    'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'];
 var ƒ = d3.f;
 
 
@@ -49,17 +49,17 @@ get_color = function(d) {
 
 
 // title
-var title = d3.select("body")
-    .append("div")
-    .append("h1")
-    .attr('id', 'title')
-    .text("NYC tracts v0.0.2");
+// var title = d3.select("body")
+//     .append("div")
+//     .append("h1")
+//     .attr('id', 'title')
+//     .text("NYC tracts v0.0.2");
 
 
 //  CARD
-var card = d3.select("body")
-    .append("div")
-    .attr("id", 'info');
+var card = d3.select("#infocard")
+//     .append("div")
+//     .attr("id", 'info');
 
 
 var nhd_name = card.append("p")
@@ -67,8 +67,9 @@ var nhd_name = card.append("p")
 
 
 // table
-var table = card.append('table')
-                .attr('class', 'fixed');
+var table = d3.select("#infocard")
+              .append('table')
+              .attr('class', 'fixed');
 
 var tbody = table.append('tbody');
 
@@ -78,7 +79,7 @@ var tbody = table.append('tbody');
 
 
 function handleMouseOver(d, i) {  // Add interactivity
-  nhd_name.text( d.properties.NTAName + ', ' + d.properties.BoroCT2010);
+  nhd_name.text( d.properties.NTAName + ', ' + d.properties.geoid);
   populate_table(d,i);
 }
 

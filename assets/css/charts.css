@@ -2,50 +2,20 @@
   fill: rgb(237, 255, 248);
 }*/
 
-#infocolumn {
-  padding-top:75px;
-  border-width: 0px;
-  border-left: 1px;
-  border-style: solid;
-  border-color: black;
-  height:100vh;
 
-}
-
-#container {
-    margin:2%;
-    padding:20px;
-  }
-
-
-path.back {
+path.zip {
   stroke: lightgray;
 	stroke-width: 1px;
-	/*fill: rgb(237, 255, 248);  //rgb(237, 255, 248);*/
+	fill: rgb(237, 255, 248);  //rgb(237, 255, 248);
 
 }
 
-.boro {
+
+.zip {
   stroke: lightgray;
-  fill-opacity:0;
-	stroke-width: 2px;
+  fill-opacity:0.0;
+	stroke-width: 1px;
 }
-
-
-.tract {
-  stroke: lightgrey;
-  stroke-width: .5px;
-  fill-opacity: .8;
-}
-
-
-.tract:hover {
-  stroke: gray;
-  fill-opacity:1;
-  stroke-width: 1px;
-  fill: rgb(34, 157, 224);
-}
-
 
 .ht {
   stroke: white;
@@ -55,8 +25,11 @@ path.back {
 
 .park {
 	stroke-width: 0px;
-  fill: rgb(173, 216, 138);
+	/*fill: rgb(122, 201, 123);*/
+  fill: rgb(155, 226, 155);
 }
+
+
 
 
 
@@ -72,9 +45,6 @@ h1#title{
 
 }
 
-
-
-
 .rButton{
   margin-right: 10px;
 }
@@ -84,6 +54,10 @@ h1#title{
   left: 13px;
 }
 
+.zip:hover {
+    fill: rgb(122, 201, 123) !important;
+    fill-opacity:1 !important;
+}
 
 text {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -97,35 +71,25 @@ text {
 }
 
 
+
+#tooltip {
+  fill: #2e2e2e;
+  font-size: 12px;
+  font-weight: 300;
+  text-anchor: middle;
+}
+
 /* CARD  CSS*/
-#infocard {
-  height:30vh;
-  width:100%;
-  border-width: 0px;
-  border-bottom: 1px;
-  border-style: solid;
-  border-color: black;
+#cardBack{
+  fill: rgba(196, 208, 199, .3)
 }
 
-
-p.tooltip {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    /*pointer-events: none;*/
+#dID{
+  fill: #2e2e2e;
+  font-size: 20px;
+  font-weight: 300;
+  text-anchor: left;
 }
-
-td, th {
-    /*padding: 1px 4px;*/
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 12px;
-}
-
-table.fixed {table-layout:fixed; width:300px;}/*Setting the table width is important!*/
-table.fixed td {overflow:hidden;}/*Hide text outside the cell.*/
-table.fixed td:nth-of-type(1) {width:200px;}/*Setting the width of column 1.*/
-table.fixed td:nth-of-type(2) {width:100px; text-align:right; }/*Setting the width of column 2.*/
-
-
-/* AXIS CSS */
 
 
 .axis path {

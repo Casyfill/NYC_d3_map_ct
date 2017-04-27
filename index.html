@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<html>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://rawgit.com/riccardoscalco/textures/master/textures.js"></script>
@@ -8,16 +9,105 @@
 <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
 
 
-<!-- <script src="http://square.github.com/cubism/cubism.v1.js?1.0.0"></script> -->
-
 <head>
+<title>CUSP QC Social Media </title>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+  <link rel="stylesheet" type="text/css" href="assets/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
-<body>
+<body class="application">
+
+<!--  NAVBAR -->
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+        <a class="navbar-brand" href="./">NYC tracts v0.0.3</a>
+      </div>
 
 
-  <div id="container"></div>
+      <div class="navbgitar">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="http://cusp.nyu.edu/people/">About</a></li>
+          <li><a href="https://github.com/Casyfill/NYC_d3_map_ct/blob/master/index.html">Source</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+<!-- LEFT COLUMN -->
+      <div class="col-sm-8">
+        <div class="chart-wrapper">
+
+          <div class="chart-stage" id="mapBlock">
+          <div class="chart-stage" id="map">
+            <div id="svg-container"></div>
+          </div>
+            <!-- <img data-src="holder.js/100%x713/white"> -->
+          </div>
+
+        </div>
+      </div>
+
+
+<!-- RIGHT COLUMN -->
+      <div class="col-sm-2" id="infocolumn">
+        
+        <div class="chart-wrapper" id="infocard">
+          <div class="chart-title">
+            Data range and vis mode
+          </div>
+          <div class="chart-stage">
+            <!-- <img data-src="holder.js/100%x150/white"> -->
+          </div>
+          <!-- <div class="chart-notes">
+            This is a sample text region to describe this chart.
+          </div> -->
+        </div>
+        <div class="chart-wrapper">
+          <div class="chart-title">
+           Stats
+          </div>
+          <div class="chart-stage" id="stats">
+            <!-- <img data-src="holder.js/100%x400/white"> -->
+          </div>
+          <!-- <div class="chart-notes">
+            Notes go down here
+          </div> -->
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+  </div>
+
+
+  <script type="text/javascript" src="assets/lib/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" src="assets/lib/holderjs/holder.js"></script>
+  <script>
+    Holder.add_theme("white", {
+      background: "#fff",
+      foreground: "#C3E0DC",
+      size: 10
+    });
+  </script>
+
+  <script type="text/javascript" src="assets/lib/keen-js/dist/keen.min.js"></script>
+  <script type="text/javascript" src="assets/js/meta.js"></script>
+  <!-- <script type="text/javascript" src="assets/js/charts.js"></script> -->
   <script src="script.js"></script>
 </body>
 </html>

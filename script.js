@@ -86,21 +86,22 @@ d3.json("data/ct2010s.json", function(error, nyb) {
 
   var fresh_ctss = topojson.feature(nyb, nyb.objects.ct2010).features;
   // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
-  d3.csv("data/communities.csv", function(error, comms)
+  d3.csv("data/communities_pop.csv", function(error, comms)
           {
-
+              //  Probably the Slowest part of the script, double loop
               //prices is an array of json objects containing the data in from the csv
               csv = comms.map(function(d)
               {
                   //each d is one line of the csv file represented as a json object
                   // console.log("Label: " + d.CTLabel)
-                  return {"community": d.community, "label": d.tract} ;
+                  return {"community": d.community, "population" :d.population,"label": d.tract} ;
               })
 
               csv.forEach(function(d, i) {
                 fresh_ctss.forEach(function(e, j) {
               if (d.label === e.properties.geoid) {
                   e.properties.community = parseInt(d.community)
+                  e.properties.population = parseInt(d.population)
                   }
                 })
               })
@@ -134,33 +135,28 @@ d3.json("data/ct2010s.json", function(error, nyb) {
 
 
 // RESIZE
-
 d3.select(window).on('resize', MapSizeChange);
 
 function MapSizeChange() {
-      var ratio  = Math.min($(window).height()/initial_height, $(window).width() / initial_width);
-      d3.select("svg").attr("transform", "scale(" + ratio + ")");
+      // var ratio  = Math.min($(window).height()/initial_height, $(window).width() / initial_width);
+      // d3.select("svg").attr("transform", "scale(" + ratio + ")");
 
 }
 
 
 //  DECOLORIZE OTHER COMMUNITIES
 function decolorize_other_communities(d,i){
-  console.log('decolorizing...');
-  // first, check if this CT is in the community
+  
   if(d.properties.hasOwnProperty('community')){
     var community = d.properties.community;
-
     cts.selectAll(".tract")
        .filter(function(d) { return d.properties.community != community })        // <== This line
        .style('opacity', .2 );
-
-}
-
+    }
 }
 
 function colorize_back(){
   cts.selectAll(".tract")
      .style('opacity', 0.8);
-  } 
+} 
 

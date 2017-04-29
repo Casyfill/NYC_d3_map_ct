@@ -2,7 +2,7 @@
 function populate_empty_table(){
 
   var columns = ['key', 'value'];
-  var data = [{'key':'Census Tract geoid', "value":"NA"},
+  var data = [{'key':'Census Tract', "value":"NA"},
               {'key':'Neighborhood', "value":"NA"},
               {'key':'Population', "value":"NA"},
               {'key':'community', "value": "NA"}];
@@ -30,7 +30,7 @@ function populate_empty_table(){
 function empty_table(){
 
   var columns = ['key', 'value'];
-  var data = [{'key':'Census Tract geoid', "value":"NA"},
+  var data = [{'key':'Census Tract', "value":"NA"},
               {'key':'Neighborhood', "value":"NA"},
               {'key':'Population', "value":"NA"},
               {'key':'community', "value": "NA"}];
@@ -56,7 +56,7 @@ function empty_table(){
 function populate_table(d,i){
     // console.log("population table");
     var columns = ['key', 'value'];
-    var new_data = [{'key':'Census Tract geoid', "value":d.properties.geoid},
+    var new_data = [{'key':'Census Tract', "value":d.properties.geoid},
                 {'key':'Neighborhood', "value":d.properties.NTAName},
                 {'key':'Population', "value":d.properties.population},                             // to change!
                 {'key':'community', "value":d.properties.community}];

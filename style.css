@@ -2,15 +2,10 @@
   fill: rgb(237, 255, 248);
 }*/
 
-#infocolumn {
-  padding-top:75px;
-  border-width: 0px;
-  border-left: 1px;
-  border-style: solid;
-  border-color: black;
-  height:100vh;
-  background:lightgrey;
-
+svg.map {
+   /*background-color: lightblue;*/
+   width: 100%;
+   height: 100vh;
 }
 
 #container {
@@ -98,8 +93,21 @@ text {
 }
 
 
-/* CARD  CSS*/
+/* RIGHT SIDE CSS*/
+
+#infocolumn {
+  padding-top:55px;
+  border-width: 0px;
+  border-left: 1px;
+  border-style: solid;
+  border-color: black;
+  height:100vh;
+  background-color:lightgrey;
+
+}
+
 #infocard {
+  padding-top:5px;
   height:30vh;
   width:100%;
   border-width: 0px;
@@ -109,6 +117,7 @@ text {
 }
 
 #stats {
+  padding-top:5px;
   height:40vh;
   border-width: 0px;
   border-bottom: 1px;
@@ -117,7 +126,14 @@ text {
 }
 
 #download {
-  height:30vh;
+  padding-top:5px;
+  height:5vh;
+}
+
+.chart-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size:10px;
+  font-weight: bold;
 }
 
 
@@ -134,13 +150,11 @@ td, th {
 
 table.fixed {table-layout:fixed; width:100%;}/*Setting the table width is important!*/
 table.fixed td {overflow:hidden;}/*Hide text outside the cell.*/
-table.fixed td:nth-of-type(1) {width:200px;}/*Setting the width of column 1.*/
-table.fixed td:nth-of-type(2) {width:100px; text-align:right; }/*Setting the width of column 2.*/
+table.fixed td:nth-of-type(1) {width:100px;}/*Setting the width of column 1.*/
+table.fixed td:nth-of-type(2) {text-align:right; }/*Setting the width of column 2.*/
 
 
 /* AXIS CSS */
-
-
 .axis path {
       display: none;}
 

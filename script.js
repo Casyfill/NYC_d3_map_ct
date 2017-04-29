@@ -1,10 +1,11 @@
 var max_width = 950,
     max_height = 700;
-    
+var initial_width = $(window).width(), initial_height = $(window).height();
+
 console.log('Its me, your old script!')
 //  MAP
 var projection = d3.geoMercator()
-  .center([-73.94, 40.70])
+  .center([-73.94, 40.72])
   .scale(60000)
   .translate([(max_width) / 2, (max_height) / 2]);
 
@@ -13,8 +14,8 @@ var path = d3.geoPath()
 
 var svg = d3.select("#svg-container")
   .append("svg")
-  .attr("width", "100%")
-  .attr("height", max_height);
+  .attr("class", "map");
+  // .attr("min-height", 700);
 
 
   // geography
@@ -66,6 +67,8 @@ var nhd_name = card.append("p")
                    .attr('id', 'tooltip')
 
 
+// Tract Name
+
 // table
 var table = d3.select("#infocard")
               .append('table')
@@ -79,13 +82,12 @@ var tbody = table.append('tbody');
 
 
 function handleMouseOver(d, i) {  // Add interactivity
-  nhd_name.text( d.properties.NTAName + ', ' + d.properties.geoid);
   populate_table(d,i);
 }
 
 
 function handleMouseOut(d, i) {
-    nhd_name.text('    ');
+  empty_table();
   }
 
 
@@ -147,12 +149,10 @@ d3.json("data/ct2010s.json", function(error, nyb) {
 
 // RESIZE
 
-d3.select(window).on('resize', sizeChange);
+d3.select(window).on('resize', MapSizeChange);
 
-function sizeChange() {
-      var mwidth  = Math.min($("#container").width(), max_width);
-      // console.log(mwidth)
-      d3.select("svg").attr("transform", "scale(" + mwidth/700 + ")");
-      $("svg").height(Math.min($("#container").width()*.86, max_height));
+function MapSizeChange() {
+      var ratio  = Math.min($(window).height()/initial_height, $(window).width() / initial_width);
+      d3.select("svg").attr("transform", "scale(" + ratio + ")");
 
 }

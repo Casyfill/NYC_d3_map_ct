@@ -40,6 +40,7 @@ var comm_colors = [ "red", "blue", "green", "yellow", "purple",
 var ƒ = d3.f;
 
 
+// color for communities, NA texture elsewise
 get_color = function(d) {
   if(d.properties.hasOwnProperty('community')){
     return comm_colors[d.properties.community];
@@ -48,26 +49,8 @@ get_color = function(d) {
   }
 }
 
-
-// title
-// var title = d3.select("body")
-//     .append("div")
-//     .append("h1")
-//     .attr('id', 'title')
-//     .text("NYC tracts v0.0.2");
-
-
 //  CARD
 var card = d3.select("#infocard")
-//     .append("div")
-//     .attr("id", 'info');
-
-
-var nhd_name = card.append("p")
-                   .attr('id', 'tooltip')
-
-
-// Tract Name
 
 // table
 var table = d3.select("#infocard")
@@ -83,11 +66,13 @@ var tbody = table.append('tbody');
 
 function handleMouseOver(d, i) {  // Add interactivity
   populate_table(d,i);
+  decolorize_other_communities(d,i);
 }
 
 
 function handleMouseOut(d, i) {
   empty_table();
+  colorize_back();
   }
 
 
@@ -129,6 +114,7 @@ d3.json("data/ct2010s.json", function(error, nyb) {
                 return d.properties.geoid;})
               .attr("nhd_name", function(d) {
                 return d.properties.NTAName;})
+              .style('opacity', 0.8)
               .on("mouseover", handleMouseOver)
               .on("mouseout", handleMouseOut)
               .style('fill', function(d) { return get_color(d)})
@@ -156,3 +142,34 @@ function MapSizeChange() {
       d3.select("svg").attr("transform", "scale(" + ratio + ")");
 
 }
+
+
+//  DECOLORIZE OTHER COMMUNITIES
+function decolorize_other_communities(d,i){
+  console.log('decolorizing...');
+  // first, check if this CT is in the community
+  if(d.properties.hasOwnProperty('community')){
+    var community = d.properties.community;
+
+    cts.selectAll(".tract")
+       .transition()            
+       .style('opacity', function(dd){ 
+          if(dd.properties.hasOwnProperty('community')){
+            if(dd.properties.community != community){
+              return .2          
+            }
+        } else {
+          return .2
+        }
+      }
+      );
+}
+
+}
+
+function colorize_back(){
+  cts.selectAll(".tract")
+     .transition()        
+     .style('opacity', 0.8);
+  } 
+

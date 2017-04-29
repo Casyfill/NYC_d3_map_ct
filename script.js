@@ -152,24 +152,15 @@ function decolorize_other_communities(d,i){
     var community = d.properties.community;
 
     cts.selectAll(".tract")
-       .transition()            
-       .style('opacity', function(dd){ 
-          if(dd.properties.hasOwnProperty('community')){
-            if(dd.properties.community != community){
-              return .2          
-            }
-        } else {
-          return .2
-        }
-      }
-      );
+       .filter(function(d) { return d.properties.community != community })        // <== This line
+       .style('opacity', .2 );
+
 }
 
 }
 
 function colorize_back(){
   cts.selectAll(".tract")
-     .transition()        
      .style('opacity', 0.8);
   } 
 

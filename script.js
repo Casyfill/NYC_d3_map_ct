@@ -1,13 +1,16 @@
-var max_width = 950,
-    max_height = 700;
-var initial_width = $(window).width(), initial_height = $(window).height();
+// var max_width = 950,
+//     max_height = 700;
+if($(window).width() >=770){
+  width = $(window).width()*0.666;
+} else { width = $(window).width()}
+var height = $(window).height()
 
-console.log('Its me, your old script!')
+
 //  MAP
 var projection = d3.geoMercator()
-  .center([-73.94, 40.72])
-  .scale(60000)
-  .translate([(max_width) / 2, (max_height) / 2]);
+  .center([-73.98, 40.72])
+  .scale(width*80)
+  .translate([(width) / 2, (height) / 2]);
 
 var path = d3.geoPath()
     .projection(projection);
@@ -15,13 +18,12 @@ var path = d3.geoPath()
 var svg = d3.select("#svg-container")
   .append("svg")
   .attr("class", "map");
-  // .attr("min-height", 700);
-
-
-  // geography
-  // var parks = svg.append("g").attr('id','parks');
+  
+// geography
+  
 var bs = svg.append("g").attr('id','boros');
 var cts = svg.append("g").attr('id','cts');
+
 var t = textures.lines()
           .size(3)
           .strokeWidth(.5)
@@ -139,7 +141,20 @@ d3.select(window).on('resize', MapSizeChange);
 
 function MapSizeChange() {
       // var ratio  = Math.min($(window).height()/initial_height, $(window).width() / initial_width);
-      // d3.select("svg").attr("transform", "scale(" + ratio + ")");
+    //   // d3.select("svg").attr("transform", "scale(" + ratio + ")");
+    console.log('resizing!')
+    if($(window).width() >=770){
+        width = $(window).width()*0.666;
+    } else { width = $(window).width()}
+    var height = $(window).height() 
+
+    // update projection
+    projection
+        .translate([width / 2, height / 2])
+        .scale(width*78);
+
+    // resize the map
+    cts.selectAll(".tract").attr('d', path);
 
 }
 

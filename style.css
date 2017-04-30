@@ -108,7 +108,7 @@ text {
   
 #infocard {
   padding-top:5px;
-  height:30vh;
+  height:40vh;
   width:100%;
   border-width: 0px;
   border-bottom: 1px;
@@ -154,46 +154,26 @@ table.fixed td:nth-of-type(1) {width:100px;}/*Setting the width of column 1.*/
 table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}/*Setting the width of column 2.*/
 
 
-/* AXIS CSS */
-.axis path {
-      display: none;}
-
-
-.axis2 line, .axis2 path {
-            fill: none;
-            stroke: #a8a6a6;
-            stroke-width: 1px;
-            shape-rendering: crispEdges;
-        }
-
-.y.axis2 path {
-      display: none;}
-
-
-.axis2 text {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 6px;
-  pointer-events: none;
-        }
-
-.plotline {
-  fill: none;
-  stroke: #a8a6a6;
+/* button */
+.button {
+  text-transform: uppercase;
+  padding-bottom: 6px;
+  font: 700 12px Lato;
+  text-align: center;
 }
 
-.mainline {
-  fill: none;
-  stroke: #4ec677;
-  stroke-width: 5px;
+.button>a {
+    padding: 13px 26px;
+    min-width: 90px;
+    background: #373931;
+    display: inline-block;
+    padding: 13px;
+    min-width: 140px;
+    border-radius: 50px;
+    color: #fff;
+    text-decoration: none;
+    transition: background .3s;
+    .button--blue a:
 }
 
-.averageline {
-  fill: none;
-  stroke: #000000;
-  stroke-width: .5px;
-}
-
-#DistrictLegend {
-  fill: #4ec677;
-
-}
+.button a:hover{background:#7A7A77}

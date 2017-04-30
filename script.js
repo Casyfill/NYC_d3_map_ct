@@ -1,5 +1,3 @@
-// var max_width = 950,
-//     max_height = 700;
 if($(window).width() >=770){
   width = $(window).width()*0.666;
 } else { width = $(window).width()}
@@ -9,7 +7,7 @@ var height = $(window).height()
 //  MAP
 var projection = d3.geoMercator()
   .center([-73.98, 40.72])
-  .scale(width*80)
+  .scale(width*74)
   .translate([(width) / 2, (height) / 2]);
 
 var path = d3.geoPath()
@@ -39,7 +37,7 @@ var comm_colors = [ "red", "blue", "green", "yellow", "purple",
                     "lime", "beige", "azure", "aliceblue", 'burlywood', 
                     "darkseagreen", 'darkslategray', 'forestgreen', 'khaki','lightsalmon',
                     'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'];
-var ƒ = d3.f;
+
 
 
 // color for communities, NA texture elsewise
@@ -51,29 +49,40 @@ get_color = function(d) {
   }
 }
 
-//  CARD
+var comm_stats;
+
+//  Right Side
 var card = d3.select("#infocard")
 
-// table
-var table = d3.select("#infocard")
+// CT table
+var ct_table = d3.select("#infocard")
               .append('table')
-              .attr('class', 'fixed');
+              .attr('class', 'fixed')
+              .attr('id', 'ct_table');
 
-var tbody = table.append('tbody');
+var ct_tbody = ct_table.append('tbody');
 
+// Community tab;e
+var cm_table = d3.select("#stats")
+                 .append('table')
+                 .attr('class', 'fixed')
+                 .attr('id', 'cm_table');
 
-
-
+var cm_tbody = cm_table.append('tbody');
 
 
 function handleMouseOver(d, i) {  // Add interactivity
-  populate_table(d,i);
-  decolorize_other_communities(d,i);
+  if(d.properties.hasOwnProperty('community')){
+    populate_ct_table(d,i);
+    decolorize_other_communities(d,i);
+    populate_cm_table(get_community_population(d.properties.community, comm_stats));
+  }
 }
 
 
 function handleMouseOut(d, i) {
-  empty_table();
+  empty_table(null_ct, ct_tbody);
+  empty_table(null_cm, cm_tbody);
   colorize_back();
   }
 
@@ -83,16 +92,18 @@ function handleMouseOut(d, i) {
 d3.json("data/ct2010s.json", function(error, nyb) {
   console.log('tracts uploaded, v3')
 
-  populate_empty_table();
-  // get_boroughs(nyb);
+  populate_empty_table(null_ct, ct_tbody);
+  populate_empty_table(null_cm, cm_tbody);
 
   var fresh_ctss = topojson.feature(nyb, nyb.objects.ct2010).features;
   // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
-  d3.csv("data/communities_pop.csv", function(error, comms)
-          {
+  d3.csv("data/communities_pop.csv", function(error, csv_data)
+          { 
+              comm_stats = get_community_stats(csv_data, 'community');
+              // console.log(com_stats);
               //  Probably the Slowest part of the script, double loop
               //prices is an array of json objects containing the data in from the csv
-              csv = comms.map(function(d)
+              csv = csv_data.map(function(d)
               {
                   //each d is one line of the csv file represented as a json object
                   // console.log("Label: " + d.CTLabel)
@@ -162,15 +173,12 @@ function MapSizeChange() {
 //  DECOLORIZE OTHER COMMUNITIES
 function decolorize_other_communities(d,i){
   
-  if(d.properties.hasOwnProperty('community')){
-    var community = d.properties.community;
-    cts.selectAll(".tract")
-       .filter(function(d) { return d.properties.community != community })        // <== This line
+  cts.selectAll(".tract")
+       .filter(function(dd) { return dd.properties.community != d.properties.community; })        // <== This line
        .style('opacity', .2 );
-    }
 }
 
-function colorize_back(){
+function colorize_back(d, i){
   cts.selectAll(".tract")
      .style('opacity', 0.8);
 } 

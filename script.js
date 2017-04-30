@@ -97,9 +97,9 @@ d3.json("data/ct2010s.json", function(error, nyb) {
 
   var fresh_ctss = topojson.feature(nyb, nyb.objects.ct2010).features;
   // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
-  d3.csv("data/communities_pop.csv", function(error, csv_data)
+  d3.csv("data/new_communities.csv", function(error, csv_data)
           { 
-              comm_stats = get_community_stats(csv_data, 'community');
+              comm_stats = get_community_stats(csv_data, 'community_all');
               // console.log(com_stats);
               //  Probably the Slowest part of the script, double loop
               //prices is an array of json objects containing the data in from the csv
@@ -107,7 +107,7 @@ d3.json("data/ct2010s.json", function(error, nyb) {
               {
                   //each d is one line of the csv file represented as a json object
                   // console.log("Label: " + d.CTLabel)
-                  return {"community": d.community, "population" :d.population,"label": d.tract} ;
+                  return {"community": d.community_all, "population" :d.population,"label": d.tract} ;
               })
 
               csv.forEach(function(d, i) {

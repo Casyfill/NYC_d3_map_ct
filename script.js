@@ -97,31 +97,37 @@ d3.json("data/ct2010s.json", function(error, nyb) {
 
   var fresh_ctss = topojson.feature(nyb, nyb.objects.ct2010).features;
   // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
-  d3.csv("data/new_communities.csv", function(error, csv_data)
-          { 
-              comm_stats = get_community_stats(csv_data, 'community_all');
-              // console.log(com_stats);
+  d3.csv("data/combined_data.csv", function(error, csv_data)
+          {   // part_all_  part_hidden_  part_recipr_
+
+              comm_stats = get_community_stats(csv_data, 'part_all_');
+              
               //  Probably the Slowest part of the script, double loop
               //prices is an array of json objects containing the data in from the csv
               csv = csv_data.map(function(d)
               {
                   //each d is one line of the csv file represented as a json object
                   // console.log("Label: " + d.CTLabel)
-                  return {"community": d.community_all, "population" :d.population,"label": d.tract} ;
+                  return {"community_all": parseInt(d.part_all_), 
+                          "community_hidden": parseInt(d.part_hidden_),
+                          "community_recipr": parseInt(d.part_recipr),
+                          "population" :parseInt(d.population),
+                          "geoid": d.tract} ;
               })
-
+              console.log(csv)
               csv.forEach(function(d, i) {
                 fresh_ctss.forEach(function(e, j) {
-              if (d.label === e.properties.geoid) {
-                  e.properties.community = parseInt(d.community)
-                  e.properties.population = parseInt(d.population)
+              if (d.geoid === e.properties.geoid) {
+                  e.properties.community = d.community_all
+                  e.properties.population = d.population
                   }
                 })
               })
 
           cts.selectAll(".tract")
               .data(fresh_ctss)
-              .enter().append("path")
+              .enter()
+              .append("path")
               .attr("class", "tract")
               .attr("d", path)
               .attr("id", function(d) {

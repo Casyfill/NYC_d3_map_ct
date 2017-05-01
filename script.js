@@ -117,7 +117,7 @@ d3.json("data/ct2010s.json", function(error, nyb) {
               csv.forEach(function(d, i) {
                 fresh_ctss.forEach(function(e, j) {
               if (d.geoid === e.properties.geoid) {
-                  e.properties.community = d.community_all
+                  e.properties.community = d['community_all']
                   e.properties.population = d.population
                   }
                 })
@@ -188,3 +188,10 @@ function colorize_back(d, i){
      .style('opacity', 0.8);
 } 
 
+
+
+// RADIO BUTTON SWITCH
+$('input[type="radio"]').on('change', function(e) {
+    ptype = document.querySelector('input[name="partition"]:checked').value;
+    console.log(ptype);
+});

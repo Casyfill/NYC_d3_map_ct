@@ -37,8 +37,8 @@ function populate_ct_table(d,i){
 function populate_cm_table(d,i){
     // console.log("population table");
     var new_data = [{'key':'Community N', 'value':d.key},
-               {'key':'Tracts', 'value':d.value.tracts},
-               {'key':'Population', 'value':f(d.value.population)}];
+                    {'key':'Tracts', 'value':d.value.tracts},
+                    {'key':'Population', 'value':f(d.value.population)}];
     // console.log(new_data[0]);
 
     // create a row for each object in the data

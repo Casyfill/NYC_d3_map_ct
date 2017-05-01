@@ -42,7 +42,7 @@ var comm_colors = [ "red", "blue", "green", "yellow", "purple",
 
 // color for communities, NA texture elsewise
 get_color = function(d) {
-  if(d.properties.hasOwnProperty('community')){
+  if(d.properties.community != ''){
     return comm_colors[d.properties.community];
   } else {
     return t.url()
@@ -72,7 +72,7 @@ var cm_tbody = cm_table.append('tbody');
 
 
 function handleMouseOver(d, i) {  // Add interactivity
-  if(d.properties.hasOwnProperty('community')){
+  if(d.properties.community != ''){
     populate_ct_table(d,i);
     decolorize_other_communities(d,i);
     populate_cm_table(get_community_population(d.properties.community, comm_stats));
@@ -108,13 +108,12 @@ d3.json("data/ct2010s.json", function(error, nyb) {
               {
                   //each d is one line of the csv file represented as a json object
                   // console.log("Label: " + d.CTLabel)
-                  return {"community_all": parseInt(d.part_all_), 
-                          "community_hidden": parseInt(d.part_hidden_),
-                          "community_recipr": parseInt(d.part_recipr),
-                          "population" :parseInt(d.population),
+                  return {"community_all": d.part_all_, 
+                          "community_hidden": d.part_hidden_,
+                          "community_recipr": d.part_recipr,
+                          "population" :d.population,
                           "geoid": d.tract} ;
               })
-              console.log(csv)
               csv.forEach(function(d, i) {
                 fresh_ctss.forEach(function(e, j) {
               if (d.geoid === e.properties.geoid) {

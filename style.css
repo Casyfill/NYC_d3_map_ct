@@ -105,10 +105,21 @@ text {
   background-color:lightgrey;
 
 }
+
+#partition {
+  padding-top:5px;
+  height:15vh;
+  width:100%;
+  border-width: 0px;
+  border-bottom: 1px;
+  border-style: solid;
+  border-color: black;
+
+}
   
 #infocard {
   padding-top:5px;
-  height:40vh;
+  height:35vh;
   width:100%;
   border-width: 0px;
   border-bottom: 1px;
@@ -118,7 +129,7 @@ text {
 
 #stats {
   padding-top:5px;
-  height:40vh;
+  height:30vh;
   border-width: 0px;
   border-bottom: 1px;
   border-style: solid;

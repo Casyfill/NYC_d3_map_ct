@@ -30,6 +30,10 @@ var t = textures.lines()
 
 svg.call(t);
 
+var MODE = 'part_all_';
+var comm_stats;
+var data;
+
 //  Community colors
 var comm_colors = [ "red", "blue", "green", "yellow", "purple",
                     "orange", "teal", "pink", "steelblue", 'magenta',
@@ -41,15 +45,16 @@ var comm_colors = [ "red", "blue", "green", "yellow", "purple",
 
 
 // color for communities, NA texture elsewise
-get_color = function(d) {
-  if(d.properties.community != ''){
-    return comm_colors[d.properties.community];
+get_color = function(d, mode) {
+
+  if(d.properties[mode] != ''){
+    return comm_colors[d.properties[mode]];
   } else {
     return t.url()
   }
 }
 
-var comm_stats;
+
 
 //  Right Side
 var card = d3.select("#infocard")
@@ -72,10 +77,10 @@ var cm_tbody = cm_table.append('tbody');
 
 
 function handleMouseOver(d, i) {  // Add interactivity
-  if(d.properties.community != ''){
+  if(d.properties[MODE] != ''){
+    decolorize_other_communities(d,i, MODE);
     populate_ct_table(d,i);
-    decolorize_other_communities(d,i);
-    populate_cm_table(get_community_population(d.properties.community, comm_stats));
+    populate_cm_table(get_community_population(d.properties[MODE], comm_stats));
   }
 }
 
@@ -99,8 +104,8 @@ d3.json("data/ct2010s.json", function(error, nyb) {
   // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
   d3.csv("data/combined_data.csv", function(error, csv_data)
           {   // part_all_  part_hidden_  part_recipr_
-
-              comm_stats = get_community_stats(csv_data, 'part_all_');
+              data = csv_data;
+              comm_stats = get_community_stats(data, MODE);
               
               //  Probably the Slowest part of the script, double loop
               //prices is an array of json objects containing the data in from the csv
@@ -108,16 +113,18 @@ d3.json("data/ct2010s.json", function(error, nyb) {
               {
                   //each d is one line of the csv file represented as a json object
                   // console.log("Label: " + d.CTLabel)
-                  return {"community_all": d.part_all_, 
-                          "community_hidden": d.part_hidden_,
-                          "community_recipr": d.part_recipr,
+                  return {"part_all_": d.part_all_, 
+                          "part_hidden_": d.part_hidden_,
+                          "part_recipr_": d.part_recipr_,
                           "population" :d.population,
                           "geoid": d.tract} ;
               })
               csv.forEach(function(d, i) {
                 fresh_ctss.forEach(function(e, j) {
               if (d.geoid === e.properties.geoid) {
-                  e.properties.community = d['community_all']
+                  e.properties.part_all_ = d['part_all_']
+                  e.properties.part_hidden_ = d['part_hidden_']
+                  e.properties.part_recipr_ = d['part_recipr_']
                   e.properties.population = d.population
                   }
                 })
@@ -136,13 +143,13 @@ d3.json("data/ct2010s.json", function(error, nyb) {
               .style('opacity', 0.8)
               .on("mouseover", handleMouseOver)
               .on("mouseout", handleMouseOut)
-              .style('fill', function(d) { return get_color(d)})
+              .style('fill', function(d) { return get_color(d, MODE)})
 
-          bs.selectAll(".boro")
-              .data(topojson.merge(nyb, nyb.objects.ct2010.geometries))
-              .enter().append("path")
-              .attr("class", "boro")
-              .attr("d", path)
+          // bs.selectAll(".boro")
+          //     .data(topojson.merge(nyb, nyb.objects.ct2010.geometries))
+          //     .enter().append("path")
+          //     .attr("class", "boro")
+          //     .attr("d", path)
 
           console.log('boroughs created')
 
@@ -179,7 +186,7 @@ function MapSizeChange() {
 function decolorize_other_communities(d,i){
   
   cts.selectAll(".tract")
-       .filter(function(dd) { return dd.properties.community != d.properties.community; })        // <== This line
+       .filter(function(dd) { return dd.properties[MODE] != d.properties[MODE]; })        // <== This line
        .style('opacity', .2 );
 }
 
@@ -189,9 +196,18 @@ function colorize_back(d, i){
 } 
 
 
-
 // RADIO BUTTON SWITCH
 $('input[type="radio"]').on('change', function(e) {
-    ptype = document.querySelector('input[name="partition"]:checked').value;
-    console.log(ptype);
+    MODE = document.querySelector('input[name="partition"]:checked').value;
+    console.log('Mode is:', MODE);
+    update_partition(MODE);
 });
+
+
+function update_partition(MODE){
+  comm_stats = get_community_stats(data, MODE);
+  // console.log(MODE, data);
+  cts.selectAll(".tract")
+     .style('fill', function(d) { return get_color(d, MODE)})
+
+}

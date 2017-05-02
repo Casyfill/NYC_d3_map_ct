@@ -7,7 +7,11 @@ var null_ct = [{'key':'Census Tract', "value":"NA"},
 
 var null_cm = [{'key':'Community N', 'value':'NA'},
                {'key':'Tracts', 'value':'NA'},
-               {'key':'Population', 'value':'NA'}]
+               {'key':'Population', 'value':'NA'},
+               {'key':"Users", 'value':'NA'},
+               {'key':"Out Connections", 'value':'NA'},
+               {'key':"In Connections", 'value':'NA'},
+               {'key':"Internal Connections", 'value':'NA'}];
 
 
 function populate_ct_table(d,i){
@@ -38,7 +42,11 @@ function populate_cm_table(d,i){
     // console.log("population table");
     var new_data = [{'key':'Community N', 'value':d.key},
                     {'key':'Tracts', 'value':d.value.tracts},
-                    {'key':'Population', 'value':f(d.value.population)}];
+                    {'key':'Population', 'value':f(d.value.population)},
+                    {'key':"Users", 'value':f(d.value.communityUsers)},
+                    {'key':"Out Connections", 'value':f(d.value.communityOutConnections)},
+                    {'key':"In Connections", 'value':f(d.value.communityInConnections)},
+                    {'key':"Internal Connections", 'value':f(d.value.communityInternalConnections)}];
     // console.log(new_data[0]);
 
     // create a row for each object in the data

@@ -75,7 +75,7 @@ var cm_table = d3.select("#stats")
                  .attr('id', 'cm_table');
 
 var cm_tbody = cm_table.append('tbody');
-
+console.log(null_cm)
 
 function handleMouseOver(d, i) {  // Add interactivity
   if(d.properties[MODE] != ''){
@@ -94,23 +94,24 @@ function handleMouseOut(d, i) {
 
 
 //  LOAD DATA
-d3.queue(2)
+d3.queue(3)
   .defer(d3.json, "data/ct2010s.json")
   .defer(d3.csv, "data/combined_data.csv")
-  .defer(d3.json, "data/communities_stats.json")
+  .defer(d3.json, "data/communities_stats2.json")
   .await(ready);
 
 
-function ready(error, nyc, csv_data, comm_stats){
+function ready(error, nyc, csv_data, comm_properties){
   if (error) throw error;
-
-  data = csv_data;
   populate_empty_table(null_ct, ct_tbody);
   populate_empty_table(null_cm, cm_tbody);
 
-  var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;  
-  all_comm_stats = get_all_community_stats(data);
+  data = csv_data;
+  all_comm_stats = get_all_community_stats(data, comm_properties);
   console.log(all_comm_stats);
+
+  var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;  
+  
 
   csv = csv_data.map(function(d)
      {
@@ -200,7 +201,6 @@ $('input[type="radio"]').on('change', function(e) {
 
 
 function update_partition(MODE){
-  // console.log(MODE, data);
   cts.selectAll(".tract")
      .style('fill', function(d) { return get_color(d, MODE)})
 

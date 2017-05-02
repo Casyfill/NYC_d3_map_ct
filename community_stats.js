@@ -12,11 +12,11 @@ function get_community_stats(csv_data, comm_column){
 	return data
 }
 
-function get_all_community_stats(csv_data){
-	var all_comm_stats = {}
+function get_all_community_stats(csv_data, comm_properties){
+	var all_comm_stats = {}; //= comm_properties;
+
 	comm_columns = ['part_all_','part_hidden_','part_recipr_'];
-	
-	for (var i = 0; i < 3; i++){
+	for (var i = 0; i < comm_columns.length; i++){
 		comm_column = comm_columns[i];
 
 		var data = d3.nest()
@@ -28,8 +28,24 @@ function get_all_community_stats(csv_data){
 			    	};
 		  }).entries(csv_data);
 
+
+		  data.forEach(function(d,i){
+		  	var result = comm_properties[comm_column].filter(function(dd) {
+        		return dd.key == d.key;});
+
+		  	// d.value = Object.assign(d.value, result[0])
+		  	cols = ["communityUsers","communityOutConnections",
+            		"communityInConnections", "communityInternalConnections"]
+            for (var i = 0; i < cols.length; i++){
+            		col = cols[i];
+    				d.value[col] = (result[0] !== undefined) ? result[0][col] : null;
+    			}
+		  })
+
 		  all_comm_stats[comm_column] = data
 	 }
+
+
 	return all_comm_stats;
 }
 

@@ -31,7 +31,7 @@ path.back {
 .tract {
   stroke: lightgrey;
   stroke-width: .5px;
-  fill-opacity: .8;
+  fill-opacity: 1;
 }
 
 
@@ -167,7 +167,7 @@ table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}/*Setting th
 
 /* button */
 .button {
-  
+
   text-transform: uppercase;
   padding-bottom: 6px;
   font: 700 12px Lato;

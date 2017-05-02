@@ -32,6 +32,7 @@ svg.call(t);
 
 var MODE = 'part_all_';
 var comm_stats;
+var all_comm_stats;
 var data;
 
 //  Community colors
@@ -80,7 +81,7 @@ function handleMouseOver(d, i) {  // Add interactivity
   if(d.properties[MODE] != ''){
     decolorize_other_communities(d,i, MODE);
     populate_ct_table(d,i);
-    populate_cm_table(get_community_population(d.properties[MODE], comm_stats));
+    populate_cm_table(get_community_population(d.properties[MODE], all_comm_stats[MODE]));
   }
 }
 
@@ -108,8 +109,8 @@ function ready(error, nyc, csv_data, comm_stats){
   populate_empty_table(null_cm, cm_tbody);
 
   var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;  
-  comm_stats = get_community_stats(data, MODE);
-  console.log(comm_stats);
+  all_comm_stats = get_all_community_stats(data);
+  console.log(all_comm_stats);
 
   csv = csv_data.map(function(d)
      {
@@ -123,7 +124,7 @@ function ready(error, nyc, csv_data, comm_stats){
      })
 
   csv.forEach(function(d, i) {
-                fresh_ctss.forEach(function(e, j) {
+      fresh_ctss.forEach(function(e, j) {
               if (d.geoid === e.properties.geoid) {
                   e.properties.part_all_ = d['part_all_']
                   e.properties.part_hidden_ = d['part_hidden_']
@@ -199,7 +200,6 @@ $('input[type="radio"]').on('change', function(e) {
 
 
 function update_partition(MODE){
-  comm_stats = get_community_stats(data, MODE);
   // console.log(MODE, data);
   cts.selectAll(".tract")
      .style('fill', function(d) { return get_color(d, MODE)})

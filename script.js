@@ -93,44 +93,47 @@ function handleMouseOut(d, i) {
 
 
 //  LOAD DATA
+d3.queue(2)
+  .defer(d3.json, "data/ct2010s.json")
+  .defer(d3.csv, "data/combined_data.csv")
+  .defer(d3.json, "data/communities_stats.json")
+  .await(ready);
 
-d3.json("data/ct2010s.json", function(error, nyb) {
-  console.log('tracts uploaded, v3')
 
+function ready(error, nyc, csv_data, comm_stats){
+  if (error) throw error;
+
+  data = csv_data;
   populate_empty_table(null_ct, ct_tbody);
   populate_empty_table(null_cm, cm_tbody);
 
-  var fresh_ctss = topojson.feature(nyb, nyb.objects.ct2010).features;
-  // ctss = parse_add_csv(fresh_ctss);  // match data from csv by BoroCT2010
-  d3.csv("data/combined_data.csv", function(error, csv_data)
-          {   // part_all_  part_hidden_  part_recipr_
-              data = csv_data;
-              comm_stats = get_community_stats(data, MODE);
-              
-              //  Probably the Slowest part of the script, double loop
-              //prices is an array of json objects containing the data in from the csv
-              csv = csv_data.map(function(d)
-              {
-                  //each d is one line of the csv file represented as a json object
-                  // console.log("Label: " + d.CTLabel)
-                  return {"part_all_": d.part_all_, 
-                          "part_hidden_": d.part_hidden_,
-                          "part_recipr_": d.part_recipr_,
-                          "population" :d.population,
-                          "geoid": d.tract} ;
-              })
-              csv.forEach(function(d, i) {
+  var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;  
+  comm_stats = get_community_stats(data, MODE);
+  console.log(comm_stats);
+
+  csv = csv_data.map(function(d)
+     {
+         //each d is one line of the csv file represented as a json object
+         // console.log("Label: " + d.CTLabel)
+         return {"part_all_": d.part_all_, 
+                 "part_hidden_": d.part_hidden_,
+                 "part_recipr_": d.part_recipr_,
+                 "population" :d.population,
+                 "geoid": d.tract} ;
+     })
+
+  csv.forEach(function(d, i) {
                 fresh_ctss.forEach(function(e, j) {
               if (d.geoid === e.properties.geoid) {
                   e.properties.part_all_ = d['part_all_']
                   e.properties.part_hidden_ = d['part_hidden_']
                   e.properties.part_recipr_ = d['part_recipr_']
                   e.properties.population = d.population
-                  }
-                })
-              })
+              }
+          })
+      })
 
-          cts.selectAll(".tract")
+  cts.selectAll(".tract")
               .data(fresh_ctss)
               .enter()
               .append("path")
@@ -145,18 +148,9 @@ d3.json("data/ct2010s.json", function(error, nyb) {
               .on("mouseout", handleMouseOut)
               .style('fill', function(d) { return get_color(d, MODE)})
 
-          // bs.selectAll(".boro")
-          //     .data(topojson.merge(nyb, nyb.objects.ct2010.geometries))
-          //     .enter().append("path")
-          //     .attr("class", "boro")
-          //     .attr("d", path)
-
-          console.log('boroughs created')
-
-        })
-
-})
-
+}
+  
+  
 
 
 // RESIZE

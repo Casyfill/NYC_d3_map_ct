@@ -36,12 +36,26 @@ var all_comm_stats;
 var data;
 
 //  Community colors
-var comm_colors = [ "red", "blue", "green", "yellow", "purple",
-                    "orange", "teal", "pink", "steelblue", 'magenta',
-                    "black", "grey", "darkgreen", "darkred", "darkblue",
-                    "lime", "beige", "azure", "aliceblue", 'burlywood', 
-                    "darkseagreen", 'darkslategray', 'forestgreen', 'khaki','lightsalmon',
-                    'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'];
+// var comm_colors = [ "red", "blue", "green", "yellow", "purple",
+//                     "orange", "teal", "pink", "steelblue", 'magenta',
+//                     "black", "grey", "darkgreen", "darkred", "darkblue",
+//                     "lime", "beige", "azure", "aliceblue", 'burlywood', 
+//                     "darkseagreen", 'darkslategray', 'forestgreen', 'khaki','lightsalmon',
+//                     'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'];
+
+
+var comm_colors = [ 
+'#E6BB1E',
+'#7D9100',
+'#002C43',
+'#157367',
+'#29447B',
+'#002C43',
+'#E0EB25',
+'#FFFF9D',
+'#ACEBAE',
+'#3AD4BB'
+];
 
 
 
@@ -75,7 +89,7 @@ var cm_table = d3.select("#stats")
                  .attr('id', 'cm_table');
 
 var cm_tbody = cm_table.append('tbody');
-console.log(null_cm)
+
 
 function handleMouseOver(d, i) {  // Add interactivity
   if(d.properties[MODE] != ''){

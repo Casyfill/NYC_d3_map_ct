@@ -17,13 +17,42 @@ var svg = d3.select("#svg-container")
   .append("svg")
   .attr("class", "map");
 
+// svg.append('text')
+//    .attr("id", "histtitle")
+//    .text("Household Income, Normalized")
+//    .attr("transform", 'translate(4,4)');
+
+var hist_height = .05  * $(window).height();
+var hist_width = .3 * $(window).width();
 var hist = d3.select("#histogram_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", "10vh")
+    .attr("height", "13vh")
+    // .style("margin-top","6vh")
+    // .attr("transform", "translate(5, 0)")
+var myHist;
+var y = d3.scaleLinear()
+          .domain([0,.3])
+          .range([hist_height, 0]);
+var x = d3.scaleLinear()
+          .domain([0,100000])
+          .rangeRound([3, hist_width-5]);
 
+var histogram = d3.histogram()
+    .domain(x.domain())
+    .value(function(d) { return d.median_income });
   
+function update_histogram(comm){
+
+    new_bins = histogram(comm);
+    console.log(new_bins);
+    myHist.data(new_bins)
+          .transition()
+          .attr("transform", function(d) {
+                   return "translate(" + x(d.x0) + "," + y(d.length/comm.length) + ")"; })
+          .attr("height", function(d) { return hist_height - y(d.length/comm.length); });
+}
 // geography
   
 var bs = svg.append("g").attr('id','boros');
@@ -65,6 +94,7 @@ get_color = function(d, mode) {
 
 
 
+
 //  Right Side
 var card = d3.select("#infocard")
 
@@ -86,11 +116,12 @@ var cm_tbody = cm_table.append('tbody');
 
 
 function handleMouseOver(d, i) {  // Add interactivity
-  console.log(MODE, 'Tract:', d.properties)
+  // console.log(MODE, 'Tract:', d.properties)
   if (! isNaN(d.properties[MODE])) {
     decolorize_other_communities(d,i, MODE);
     populate_ct_table(d,i, MODE);
     populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
+    update_histogram(data.filter(function(dd){return dd[MODE] == d.properties[MODE]}))
   }
 }
 
@@ -99,6 +130,7 @@ function handleMouseOut(d, i) {
   empty_table(null_ct, ct_tbody);
   empty_table(null_cm, cm_tbody);
   colorize_back();
+  update_histogram(data);
   }
 
 
@@ -148,7 +180,26 @@ function ready(error, nyc, csv_data, comm_properties){
               .on("mouseout", handleMouseOut)
               .style('fill', function(d) { return get_color(d, MODE)})
 
-  
+  // filtered_data = data.filter(function(d){ return $.isNumeric(d.median_income)})
+  // console.log(filtered_data);
+  bins = histogram(data);
+  // console.log(bins);
+  // console.log('Histogram', bins.map(function(d){ return d.length/data.length}));
+  myHist = hist.selectAll("rect")
+                   .data(bins)
+                   .enter().append("rect")
+                   .attr("class", "bar")
+                   .attr("x", 1)
+                   .attr("transform", function(d) {
+                   return "translate(" + x(d.x0) + "," + y(d.length/data.length) + ")"; })
+                   .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+                   .attr("height", function(d) { return hist_height - y(d.length/data.length); })
+                   .style("fill", t.url());
+
+  hist.append("g")
+      .attr("transform", "translate(0," + hist_height + ")")
+      .call(d3.axisBottom(x))
+
 }
   
   

@@ -54,7 +54,10 @@ path.back {
   fill: rgb(173, 216, 138);
 }
 
-
+p#histtitle {
+  font: 700 7px Lato;
+  text-align: left;
+}
 
 h1#title{
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

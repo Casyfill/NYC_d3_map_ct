@@ -1,8 +1,11 @@
 var columns = ['key', 'value'];
-var f = d3.format(",r");
+var f = d3.format(",");
+var fv = d3.format("$,");
+var ff = d3.format(".2f");
 var null_ct = [{'key':'Census Tract', "value":"NA"},
               {'key':'Neighborhood', "value":"NA"},
               {'key':'Population', "value":"NA"},
+              {'key':'Median Income', "value":"NA"},
               {'key':'community', "value": "NA"}];
 
 var null_cm = [{'key':'Community N', 'value':'NA'},
@@ -14,12 +17,17 @@ var null_cm = [{'key':'Community N', 'value':'NA'},
                {'key':"Internal Connections", 'value':'NA'}];
 
 
-function populate_ct_table(d,i){
+function replacer(value){
+  if (isNaN(value)){return 'NA'} else {return fv(value)}
+}
+
+function populate_ct_table(d,i, mode){
     // console.log("population table");
     var new_data = [{'key':'Census Tract', "value":d.properties.geoid},
                 {'key':'Neighborhood', "value":d.properties.NTAName},
-                {'key':'Population', "value":d.properties.population},                             // to change!
-                {'key':'community', "value":d.properties.community}];
+                {'key':'Population', "value":f(d.properties.population)},                             // to change!
+                {'key':'Median Income', "value":replacer(d.properties.income)},
+                {'key':'community', "value": d.properties[mode]}]
     // console.log(new_data[0]);
 
     // create a row for each object in the data
@@ -46,7 +54,7 @@ function populate_cm_table(d,i){
                     {'key':"Users", 'value':f(d.value.communityUsers)},
                     {'key':"Out Connections", 'value':f(d.value.communityOutConnections)},
                     {'key':"In Connections", 'value':f(d.value.communityInConnections)},
-                    {'key':"Internal Connections", 'value':f(d.value.communityInternalConnections)}];
+                    {'key':"Internal Connections", 'value':ff(d.value.communityInternalConnections)}];
     // console.log(new_data[0]);
 
     // create a row for each object in the data

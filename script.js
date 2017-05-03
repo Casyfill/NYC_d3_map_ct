@@ -16,6 +16,13 @@ var path = d3.geoPath()
 var svg = d3.select("#svg-container")
   .append("svg")
   .attr("class", "map");
+
+var hist = d3.select("#histogram_container")
+    .append("svg")
+    .attr("class", "hist")
+    .attr("width", "100%")
+    .attr("height", "10vh")
+
   
 // geography
   
@@ -49,7 +56,7 @@ var comm_colors = [ "red", "blue", "green", "yellow", "purple",
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
 
-  if(d.properties[mode] != ''){
+  if (! isNaN(d.properties[mode])){
     return comm_colors[d.properties[mode]];
   } else {
     return t.url()
@@ -70,7 +77,7 @@ var ct_table = d3.select("#infocard")
 var ct_tbody = ct_table.append('tbody');
 
 // Community tab;e
-var cm_table = d3.select("#stats")
+var cm_table = d3.select("#stats_container")
                  .append('table')
                  .attr('class', 'fixed')
                  .attr('id', 'cm_table');
@@ -79,10 +86,11 @@ var cm_tbody = cm_table.append('tbody');
 
 
 function handleMouseOver(d, i) {  // Add interactivity
-  if(d.properties[MODE] != ''){
+  console.log(MODE, 'Tract:', d.properties)
+  if (! isNaN(d.properties[MODE])) {
     decolorize_other_communities(d,i, MODE);
-    populate_ct_table(d,i);
-    populate_cm_table(get_community_population(d.properties[MODE], all_comm_stats[MODE]));
+    populate_ct_table(d,i, MODE);
+    populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
   }
 }
 
@@ -97,7 +105,7 @@ function handleMouseOut(d, i) {
 //  LOAD DATA
 d3.queue(3)
   .defer(d3.json, "data/ct2010s.json")
-  .defer(d3.csv, "data/combined_data.csv")
+  .defer(d3.csv, "data/combined_data2.csv")
   .defer(d3.json, "data/communities_stats2.json")
   .await(ready);
 
@@ -109,31 +117,20 @@ function ready(error, nyc, csv_data, comm_properties){
 
   data = csv_data;
   all_comm_stats = get_all_community_stats(data, comm_properties);
-  console.log(all_comm_stats);
-
+  // console.log(all_comm_stats);
   var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;  
   
+  var csv = {};
+  data.forEach(function(d, i){
+          csv[d.geoid] = d
+  })
 
-  csv = csv_data.map(function(d)
-     {
-         //each d is one line of the csv file represented as a json object
-         // console.log("Label: " + d.CTLabel)
-         return {"part_all_": d.part_all_, 
-                 "part_hidden_": d.part_hidden_,
-                 "part_recipr_": d.part_recipr_,
-                 "population" :d.population,
-                 "geoid": d.tract} ;
-     })
-
-  csv.forEach(function(d, i) {
-      fresh_ctss.forEach(function(e, j) {
-              if (d.geoid === e.properties.geoid) {
-                  e.properties.part_all_ = d['part_all_']
-                  e.properties.part_hidden_ = d['part_hidden_']
-                  e.properties.part_recipr_ = d['part_recipr_']
-                  e.properties.population = d.population
-              }
-          })
+  fresh_ctss.forEach(function(e, j) {
+        e.properties.part_all_ = parseFloat(csv[e.properties.geoid]['part_all_'])
+        e.properties.part_hidden_ = parseFloat(csv[e.properties.geoid]['part_hidden_'])
+        e.properties.part_recipr_ = parseFloat(csv[e.properties.geoid]['part_recipr_'])
+        e.properties.population = parseInt(csv[e.properties.geoid].population)
+        e.properties.income = parseInt(csv[e.properties.geoid].median_income)
       })
 
   cts.selectAll(".tract")
@@ -151,6 +148,7 @@ function ready(error, nyc, csv_data, comm_properties){
               .on("mouseout", handleMouseOut)
               .style('fill', function(d) { return get_color(d, MODE)})
 
+  
 }
   
   

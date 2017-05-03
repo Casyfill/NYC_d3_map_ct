@@ -16,9 +16,8 @@ function get_all_community_stats(csv_data, comm_properties){
 	var all_comm_stats = {}; //= comm_properties;
 
 	comm_columns = ['part_all_','part_hidden_','part_recipr_'];
-	for (var i = 0; i < comm_columns.length; i++){
-		comm_column = comm_columns[i];
-
+	comm_columns.forEach(function(comm_column, i){
+		
 		var data = d3.nest()
 		  .key(function(d) { return d[comm_column];})
 		  .rollup(function(d) { 
@@ -43,7 +42,7 @@ function get_all_community_stats(csv_data, comm_properties){
 		  })
 
 		  all_comm_stats[comm_column] = data
-	 }
+	 })
 
 
 	return all_comm_stats;
@@ -51,6 +50,6 @@ function get_all_community_stats(csv_data, comm_properties){
 
 
 
-function get_community_population(i, comm_stats){
+function get_community_datas(i, comm_stats){
 	return comm_stats.filter(function(d){ return d.key == i })[0]
 }

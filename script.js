@@ -23,53 +23,55 @@ var svg = d3.select("#svg-container")
 //    .text("Household Income, Normalized")
 //    .attr("transform", 'translate(4,4)');
 
-var hist_height = .05  * $(window).height();
-var hist_width = .3 * $(window).width();
+var hist_height =  Math.round(.24 * (d3.select('#stats').node().getBoundingClientRect()['height'] - 146 - 4*42)) ;
+var hist_width = d3.select('#comm_stats').node().getBoundingClientRect()['width'];
+console.log(d3.select('#stats').node().getBoundingClientRect()['height'], hist_height);
+
 var hist1 = d3.select("#income_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", "10vh")
+    .attr("height", hist_height + "px")
 
 var hist2 = d3.select("#owners_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", "10vh")
+    .attr("height", hist_height + "px")
 
 var hist3 = d3.select("#commute_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", "10vh")
+    .attr("height", hist_height + "px")
 
 var hist4 = d3.select("#age_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", "10vh")
+    .attr("height", hist_height + "px")
 
 var y = d3.scaleLinear()
           .domain([0,.3])
-          .range([hist_height, 0]);
+          .range([hist_height - 20, 0]);
 
 
 var x1 = d3.scaleLinear()
           .domain([0,100000])
-          .rangeRound([3, hist_width-5]);
+          .rangeRound([10, hist_width-20]);
 
 var x2 = d3.scaleLinear()
           .domain([0,1.0])
-          .rangeRound([3, hist_width-5]);
+          .rangeRound([10, hist_width-20]);
 
 var x3 = d3.scaleLinear()
           .domain([0,50])
-          .rangeRound([3, hist_width-5]);
+          .rangeRound([10, hist_width-20]);
 
 
 var x4 = d3.scaleLinear()
-          .domain([0,80])
-          .rangeRound([3, hist_width-5]);
+          .domain([0,50])
+          .rangeRound([10, hist_width-20]);
 
 
 var hist_income = d3.histogram()
@@ -101,25 +103,25 @@ function update_histograms(comm){
           .transition()
           .attr("transform", function(d) {
                    return "translate(" + x1(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - y(d.length/comm.length); });
+          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
 
     myHist2.data(new_bins2)
           .transition()
           .attr("transform", function(d) {
                    return "translate(" + x2(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - y(d.length/comm.length); });
+          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
 
     myHist3.data(new_bins3)
           .transition()
           .attr("transform", function(d) {
                    return "translate(" + x3(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - y(d.length/comm.length); });
+          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
 
     myHist4.data(new_bins4)
           .transition()
           .attr("transform", function(d) {
                    return "translate(" + x4(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - y(d.length/comm.length); });
+          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
 }
 // geography
 
@@ -273,13 +275,13 @@ function ready(error, nyc, csv_data, comm_properties){
                    .attr("class", "bar")
                    .attr("x", 1)
                    .attr("transform", function(d) {
-                   return "translate(" + x1(d.x0) + "," + y(d.length/data.length) + ")"; })
-                   .attr("width", function(d) { return x1(d.x1) - x1(d.x0) -1 ; })
-                   .attr("height", function(d) { return hist_height - y(d.length/data.length); })
+                   return "translate(" + (x1(d.x0)) + "," + ( hist_height -20 - y(d.length/data.length) ) + ")"; })
+                   .attr("width", function(d) { return x1(d.x1) - x1(d.x0) ; })
+                   .attr("height", function(d) { return y(d.length/data.length); })
                    .style("fill", t.url());
 
   hist1.append("g")
-      .attr("transform", "translate(0," + hist_height + ")")
+      .attr("transform", "translate(0," + ( hist_height - 17 ) + ")")
       .call(d3.axisBottom(x1))
 
   myHist2 = hist2.selectAll("rect")
@@ -288,13 +290,13 @@ function ready(error, nyc, csv_data, comm_properties){
                    .attr("class", "bar")
                    .attr("x", 1)
                    .attr("transform", function(d) {
-                   return "translate(" + x2(d.x0) + "," + y(d.length/data.length) + ")"; })
-                   .attr("width", function(d) { return x2(d.x1) - x2(d.x0) -1 ; })
-                   .attr("height", function(d) { return hist_height - y(d.length/data.length); })
+                   return "translate(" + (x2(d.x0)) + "," + ( hist_height - 20 - y(d.length/data.length)) + ")"; })
+                   .attr("width", function(d) { return x2(d.x1) - x2(d.x0) ; })
+                   .attr("height", function(d) { return y(d.length/data.length); })
                    .style("fill", t.url());
 
   hist2.append("g")
-      .attr("transform", "translate(0," + hist_height + ")")
+      .attr("transform", "translate(0," +  ( hist_height - 17 ) + ")")
       .call(d3.axisBottom(x2)
               .tickFormat(formatPercent));
 
@@ -304,13 +306,13 @@ function ready(error, nyc, csv_data, comm_properties){
                    .attr("class", "bar")
                    .attr("x", 1)
                    .attr("transform", function(d) {
-                   return "translate(" + x3(d.x0) + "," + y(d.length/data.length) + ")"; })
-                   .attr("width", function(d) { return x3(d.x1) - x3(d.x0) -1 ; })
-                   .attr("height", function(d) { return hist_height - y(d.length/data.length); })
+                   return "translate(" + (x3(d.x0)) + "," + ( hist_height - 20 - y(d.length/data.length)) + ")"; })
+                   .attr("width", function(d) { return x3(d.x1) - x3(d.x0)  ; })
+                   .attr("height", function(d) { return y(d.length/data.length); })
                    .style("fill", t.url());
 
   hist3.append("g")
-        .attr("transform", "translate(0," + hist_height + ")")
+        .attr("transform", "translate(0," + ( hist_height - 17 ) + ")")
         .call(d3.axisBottom(x3))
   
 
@@ -320,13 +322,13 @@ function ready(error, nyc, csv_data, comm_properties){
                    .attr("class", "bar")
                    .attr("x", 1)
                    .attr("transform", function(d) {
-                   return "translate(" + x4(d.x0) + "," + y(d.length/data.length) + ")"; })
+                   return "translate(" + (x4(d.x0)) + "," + ( hist_height - y(d.length/data.length) - 20) + ")"; })
                    .attr("width", function(d) { return x4(d.x1) - x4(d.x0) -1 ; })
-                   .attr("height", function(d) { return hist_height - y(d.length/data.length); })
+                   .attr("height", function(d) { return y(d.length/data.length); })
                    .style("fill", t.url());
 
   hist4.append("g")
-        .attr("transform", "translate(0," + hist_height + ")")
+        .attr("transform", "translate(0," + ( hist_height - 17 )+ ")")
         .call(d3.axisBottom(x4))
 
 }
@@ -372,7 +374,7 @@ function colorize_back(d, i){
 
 
 // RADIO BUTTON SWITCH
-$('input[type="radio"] #partition').on('change', function(e) {
+$('form#partition input[type="radio"]').on('change', function(e) {
     MODE = document.querySelector('input[name="partition"]:checked').value;
     console.log('Mode is:', MODE);
     update_partition(MODE);

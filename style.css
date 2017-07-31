@@ -99,7 +99,7 @@ text {
 /* RIGHT SIDE CSS*/
 
 #infocolumn {
-  padding-top:75px;
+  padding-top:60px;
   border-width: 0px;
   border-left: 1px;
   border-style: solid;
@@ -142,22 +142,20 @@ div #modeselector {
 
  
 #infocard {
-  padding-top:5px;
-  height:15vh;
-  max-height: 150px; 
-  height:20vh;
+  margin-top:5px;
+  height:115px;
   width:100%;
-  bottom:0;
 
 }
 
 #download_section {
-  position:absolute; 
+  
   height: 5vh;
   max-height: 50px;
   width:100%;
-  bottom:0;
   border-bottom: 0px !important;
+  /*position:absolute; */
+  /*bottom:0;*/
 }
 
 #download {

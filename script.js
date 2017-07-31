@@ -68,7 +68,7 @@ var x3 = d3.scaleLinear()
 
 
 var x4 = d3.scaleLinear()
-          .domain([0,50])
+          .domain([0,80])
           .rangeRound([3, hist_width-5]);
 
 
@@ -372,7 +372,7 @@ function colorize_back(d, i){
 
 
 // RADIO BUTTON SWITCH
-$('input[type="radio"]').on('change', function(e) {
+$('input[type="radio"] #partition').on('change', function(e) {
     MODE = document.querySelector('input[name="partition"]:checked').value;
     console.log('Mode is:', MODE);
     update_partition(MODE);

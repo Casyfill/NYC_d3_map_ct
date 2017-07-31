@@ -31,7 +31,7 @@
           <span class="icon-bar"></span>
         </button>
 
-        <a class="navbar-brand" href="./">NYC tracts v0.0.3</a>
+        <a class="navbar-brand" href="./">NYC tracts v0.0.4</a>
       </div>
 
 
@@ -68,11 +68,19 @@
            Partition
           </div>
           <div class="chart-stage" id="partition">
-            <form action="">
-              <input type="radio" name="partition" value="part_all_"  checked> All mentions<br>
-              <input type="radio" name="partition" value="part_recipr_"> Reciprocal mentions<br>
-              <input type="radio" name="partition" value="part_hidden_"> Hidden links
-            </form>
+            <div id="forms" class="flex">
+              <form action="">
+                <input type="radio" name="partition" value="part_all_"  checked> All mentions<br>
+                <input type="radio" name="partition" value="part_recipr_"> Reciprocal mentions<br>
+                <input type="radio" name="partition" value="part_hidden_"> Hidden links
+              </form>
+            
+            
+              <form action="" id="viz_mode">
+                <input type="radio" name="mode" value="ct"  checked>Census Tracts<br>
+                <input type="radio" name="mode" value="users">Users<br>
+              </form>
+            </div>
           </div>
          
         </div>

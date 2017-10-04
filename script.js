@@ -258,10 +258,12 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .enter()
         .append("circle")
         .attr("class", "point")
-        .attr("r", 1)
+        .attr("r", .7)
+        .attr("pointer-events", "none")
         .attr("transform", function(d) {
             return "translate(" + projection([d.lat, d.lon]) + ")";
         })
+        .style('fill-opacity', .4)
         .style('fill', function(d) {
             return comm_colors[d.Community]
         })

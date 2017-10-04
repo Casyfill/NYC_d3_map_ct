@@ -191,14 +191,8 @@ function handleMouseOver(d, i) {  // Add interactivity
     decolorize_other_communities(d,i, MODE);
     populate_ct_table(d,i, MODE);
     populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
+    console.log(d.properties[MODE])
     update_histograms(data.filter(function(dd){return dd[MODE] == d.properties[MODE]}))
-
-    // div.transition()
-    //    .duration(200)
-    //    .style("opacity", .9);
-    //    .html(formatTime(d.date) + "<br/>"  + d.close)
-    //    .style("left", (d3.event.pageX) + "px")
-    //    .style("top", (d3.event.pageY - 28) + "px");
        }	
   }
 
@@ -214,8 +208,8 @@ function handleMouseOut(d, i) {
 //  LOAD DATA
 d3.queue(3)
   .defer(d3.json, "data/ct2010s.json")
-  .defer(d3.csv, "data/combined_data3.csv")
-  .defer(d3.json, "data/communities_stats2.json")
+  .defer(d3.csv, "data/combined_data4.csv")
+  .defer(d3.json, "data/communities_stats3.json")
   .await(ready);
 
 
@@ -224,9 +218,20 @@ function ready(error, nyc, csv_data, comm_properties){
   populate_empty_table(null_ct, ct_tbody);
   populate_empty_table(null_cm, cm_tbody);
 
+
+  var back = {'url':'img/usercomm1.5.png'};
+  
+  var img = svg.insert("image",":first-child")
+               .attr("xlink:href", "img/usercomm_mct.png")
+               .attr("x", width/2 - width * .1)
+               .attr("y", 0)
+               .attr("width", width *.4)
+               .attr("height", 1.4 * height)
+               .style("visibility", "hidden");
+
   data = csv_data;
   all_comm_stats = get_all_community_stats(data, comm_properties);
-  // console.log(all_comm_stats);
+  console.log(all_comm_stats);
   var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;
 
   var csv = {};
@@ -239,6 +244,7 @@ function ready(error, nyc, csv_data, comm_properties){
         e.properties.part_all_ = Math.round(parseFloat(csv[e.properties.geoid]['part_all_']))
         e.properties.part_hidden_ = Math.round(parseFloat(csv[e.properties.geoid]['part_hidden_']))
         e.properties.part_recipr_ = Math.round(parseFloat(csv[e.properties.geoid]['part_recipr_']))
+        e.properties.part_user = Math.round(parseFloat(csv[e.properties.geoid]['part_user']))
         e.properties.population = parseInt(csv[e.properties.geoid].population)
         e.properties.income = parseInt(csv[e.properties.geoid].median_income)
         e.properties.own_occupied = parseFloat(csv[e.properties.geoid].owner_occupied_housing_units)
@@ -376,13 +382,28 @@ function colorize_back(d, i){
 // RADIO BUTTON SWITCH
 $('form#partition input[type="radio"]').on('change', function(e) {
     MODE = document.querySelector('input[name="partition"]:checked').value;
+    console.log(MODE == 'user');
     console.log('Mode is:', MODE);
     update_partition(MODE);
 });
 
 
 function update_partition(MODE){
-  cts.selectAll(".tract")
-     .style('fill', function(d) { return get_color(d, MODE)})
+  console.log('updation partition')
+  if(MODE === "part_user"){
+    console.log('!!!!')
+    cts.selectAll(".tract")
+       .style('fill-opacity', 0.8)
+       .style('fill', function(d) { return get_color(d, MODE)})
 
+    // svg.select('image').style('visibility', 'visible');
+
+  } else {
+  
+  // svg.select('image').style('visibility', 'hidden');
+
+  cts.selectAll(".tract")
+      .style('fill-opacity', 0.8)
+      .style('fill', function(d) { return get_color(d, MODE)})
+  }
 }

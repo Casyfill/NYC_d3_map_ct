@@ -36,10 +36,10 @@ path.back {
 
 
 .tract:hover {
-  stroke: gray;
-  fill-opacity:1;
-  stroke-width: 1px;
-  fill: rgb(34, 157, 224);
+  stroke: black;
+  fill-opacity:1 !important;
+  stroke-width: 2px;
+  
 }
 
 

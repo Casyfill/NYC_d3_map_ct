@@ -1,29 +1,34 @@
-if($(window).width() >=770){
-  width = $(window).width()*0.666;
-} else { width = $(window).width()}
+if ($(window).width() >= 770) {
+    width = $(window).width() * 0.666;
+} else {
+    width = $(window).width()
+}
 var height = $(window).height()
 
 var formatPercent = d3.format(".0%");
 
 //  MAP
 var projection = d3.geoMercator()
-  .center([-73.98, 40.72])
-  .scale(width*74)
-  .translate([(width) / 2, (height) / 2]);
+    .center([-73.98, 40.72])
+    .scale(width * 74)
+    .translate([(width) / 2, (height) / 2]);
+
+console.log(projection([-73.98, 40.72]));
 
 var path = d3.geoPath()
     .projection(projection);
 
 var svg = d3.select("#svg-container")
-  .append("svg")
-  .attr("class", "map");
+    .append("svg")
+    .attr("class", "map");
 
+var scatter;
 // svg.append('text')
 //    .attr("id", "histtitle")
 //    .text("Household Income, Normalized")
 //    .attr("transform", 'translate(4,4)');
 
-var hist_height =  Math.round(.24 * (d3.select('#stats').node().getBoundingClientRect()['height'] - 146 - 4*42)) ;
+var hist_height = Math.round(.24 * (d3.select('#stats').node().getBoundingClientRect()['height'] - 146 - 4 * 42));
 var hist_width = d3.select('#comm_stats').node().getBoundingClientRect()['width'];
 console.log(d3.select('#stats').node().getBoundingClientRect()['height'], hist_height);
 
@@ -52,47 +57,55 @@ var hist4 = d3.select("#age_container")
     .attr("height", hist_height + "px")
 
 var y = d3.scaleLinear()
-          .domain([0,.3])
-          .range([hist_height - 20, 0]);
+    .domain([0, .3])
+    .range([hist_height - 20, 0]);
 
 
 var x1 = d3.scaleLinear()
-          .domain([0,100000])
-          .rangeRound([10, hist_width-20]);
+    .domain([0, 100000])
+    .rangeRound([10, hist_width - 20]);
 
 var x2 = d3.scaleLinear()
-          .domain([0,1.0])
-          .rangeRound([10, hist_width-20]);
+    .domain([0, 1.0])
+    .rangeRound([10, hist_width - 20]);
 
 var x3 = d3.scaleLinear()
-          .domain([0,50])
-          .rangeRound([10, hist_width-20]);
+    .domain([0, 50])
+    .rangeRound([10, hist_width - 20]);
 
 
 var x4 = d3.scaleLinear()
-          .domain([0,50])
-          .rangeRound([10, hist_width-20]);
+    .domain([0, 50])
+    .rangeRound([10, hist_width - 20]);
 
 
 var hist_income = d3.histogram()
     .domain(x1.domain())
-    .value(function(d) { return d.median_income });
+    .value(function(d) {
+        return d.median_income
+    });
 
 
 var hist_owners = d3.histogram()
     .domain(x2.domain())
-    .value(function(d) { return d.owner_occupied_housing_units });
+    .value(function(d) {
+        return d.owner_occupied_housing_units
+    });
 
 var hist_comm = d3.histogram()
     .domain(x3.domain())
-    .value(function(d) { return d.mean_commute_minutes });
+    .value(function(d) {
+        return d.mean_commute_minutes
+    });
 
 var hist_age = d3.histogram()
     .domain(x3.domain())
-    .value(function(d) { return d.age });
+    .value(function(d) {
+        return d.age
+    });
 
 
-function update_histograms(comm){
+function update_histograms(comm) {
 
     new_bins1 = hist_income(comm);
     new_bins2 = hist_owners(comm);
@@ -100,39 +113,51 @@ function update_histograms(comm){
     new_bins4 = hist_age(comm);
 
     myHist1.data(new_bins1)
-          .transition()
-          .attr("transform", function(d) {
-                   return "translate(" + x1(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
+        .transition()
+        .attr("transform", function(d) {
+            return "translate(" + x1(d.x0) + "," + y(d.length / comm.length) + ")";
+        })
+        .attr("height", function(d) {
+            return hist_height - 20 - y(d.length / comm.length);
+        });
 
     myHist2.data(new_bins2)
-          .transition()
-          .attr("transform", function(d) {
-                   return "translate(" + x2(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
+        .transition()
+        .attr("transform", function(d) {
+            return "translate(" + x2(d.x0) + "," + y(d.length / comm.length) + ")";
+        })
+        .attr("height", function(d) {
+            return hist_height - 20 - y(d.length / comm.length);
+        });
 
     myHist3.data(new_bins3)
-          .transition()
-          .attr("transform", function(d) {
-                   return "translate(" + x3(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
+        .transition()
+        .attr("transform", function(d) {
+            return "translate(" + x3(d.x0) + "," + y(d.length / comm.length) + ")";
+        })
+        .attr("height", function(d) {
+            return hist_height - 20 - y(d.length / comm.length);
+        });
 
     myHist4.data(new_bins4)
-          .transition()
-          .attr("transform", function(d) {
-                   return "translate(" + x4(d.x0) + "," + y(d.length/comm.length) + ")"; })
-          .attr("height", function(d) { return hist_height - 20 - y(d.length/comm.length); });
+        .transition()
+        .attr("transform", function(d) {
+            return "translate(" + x4(d.x0) + "," + y(d.length / comm.length) + ")";
+        })
+        .attr("height", function(d) {
+            return hist_height - 20 - y(d.length / comm.length);
+        });
 }
 // geography
 
-var bs = svg.append("g").attr('id','boros');
-var cts = svg.append("g").attr('id','cts');
+var bs = svg.append("g").attr('id', 'boros');
+var cts = svg.append("g").attr('id', 'cts');
 
 var t = textures.lines()
-          .size(3)
-          .strokeWidth(.5)
-          .stroke("white")
-          .background("grey");
+    .size(3)
+    .strokeWidth(.5)
+    .stroke("white")
+    .background("grey");
 
 svg.call(t);
 
@@ -142,12 +167,13 @@ var all_comm_stats;
 var data;
 
 //  Community colors
-var comm_colors = [ "red", "blue", "green", "yellow", "purple",
-                    "orange", "teal", "pink", "steelblue", 'magenta',
-                    "black", "grey", "darkgreen", "darkred", "darkblue",
-                    "lime", "beige", "azure", "aliceblue", 'burlywood',
-                    "darkseagreen", 'darkslategray', 'forestgreen', 'khaki','lightsalmon',
-                    'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'];
+var comm_colors = ["red", "blue", "green", "yellow", "purple",
+    "orange", "teal", "pink", "steelblue", 'magenta',
+    "black", "grey", "darkgreen", "darkred", "darkblue",
+    "lime", "beige", "azure", "aliceblue", 'burlywood',
+    "darkseagreen", 'darkslategray', 'forestgreen', 'khaki', 'lightsalmon',
+    'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'
+];
 
 
 
@@ -155,11 +181,11 @@ var comm_colors = [ "red", "blue", "green", "yellow", "purple",
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
 
-  if (! isNaN(d.properties[mode])){
-    return comm_colors[d.properties[mode]];
-  } else {
-    return t.url()
-  }
+    if (!isNaN(d.properties[mode])) {
+        return comm_colors[d.properties[mode]];
+    } else {
+        return t.url()
+    }
 }
 
 
@@ -170,77 +196,89 @@ var card = d3.select("#infocard")
 
 // CT table
 var ct_table = d3.select("#infocard")
-              .append('table')
-              .attr('class', 'fixed')
-              .attr('id', 'ct_table');
+    .append('table')
+    .attr('class', 'fixed')
+    .attr('id', 'ct_table');
 
 var ct_tbody = ct_table.append('tbody');
 
 // Community tab;e
 var cm_table = d3.select("#stats_container")
-                 .append('table')
-                 .attr('class', 'fixed')
-                 .attr('id', 'cm_table');
+    .append('table')
+    .attr('class', 'fixed')
+    .attr('id', 'cm_table');
 
 var cm_tbody = cm_table.append('tbody');
 
 
-function handleMouseOver(d, i) {  // Add interactivity
-  // console.log(MODE, 'Tract:', d.properties)
-  if (! isNaN(d.properties[MODE])) {
-    decolorize_other_communities(d,i, MODE);
-    populate_ct_table(d,i, MODE);
-    populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
-    console.log(d.properties[MODE])
-    update_histograms(data.filter(function(dd){return dd[MODE] == d.properties[MODE]}))
-       }	
-  }
+function handleMouseOver(d, i) {
+    // Add interactivity
+    // console.log(MODE, 'Tract:', d.properties);
+
+    if (!isNaN(d.properties[MODE])) {
+        console.log(d);
+        decolorize_other_communities(d, i, MODE);
+        populate_ct_table(d, i, MODE);
+        populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
+        // console.log(d.properties[MODE]);
+        update_histograms(data.filter(function(dd) {
+            return dd[MODE] == d.properties[MODE]
+        }))
+    }
+}
 
 
 function handleMouseOut(d, i) {
-  empty_table(null_ct, ct_tbody);
-  empty_table(null_cm, cm_tbody);
-  colorize_back();
-  update_histograms(data);
-  }
+    empty_table(null_ct, ct_tbody);
+    empty_table(null_cm, cm_tbody);
+    colorize_back();
+    update_histograms(data);
+}
 
 
 //  LOAD DATA
 d3.queue(3)
-  .defer(d3.json, "data/ct2010s.json")
-  .defer(d3.csv, "data/combined_data4.csv")
-  .defer(d3.json, "data/communities_stats3.json")
-  .await(ready);
+    .defer(d3.json, "data/ct2010s.json")
+    .defer(d3.csv, "data/combined_data4.csv")
+    .defer(d3.json, "data/communities_stats3.json")
+    .defer(d3.csv, "data/users.csv")
+    .await(ready);
 
 
-function ready(error, nyc, csv_data, comm_properties){
-  if (error) throw error;
-  populate_empty_table(null_ct, ct_tbody);
-  populate_empty_table(null_cm, cm_tbody);
+function ready(error, nyc, csv_data, comm_properties, userpoints) {
+    if (error) throw error;
+    populate_empty_table(null_ct, ct_tbody);
+    populate_empty_table(null_cm, cm_tbody);
 
 
-  var back = {'url':'img/usercomm1.5.png'};
-  
-  var img = svg.insert("image",":first-child")
-               .attr("xlink:href", "img/usercomm_mct.png")
-               .attr("x", width/2 - width * .1)
-               .attr("y", 0)
-               .attr("width", width *.4)
-               .attr("height", 1.4 * height)
-               .style("visibility", "hidden");
+    scatter = svg.append("g")
+        .attr("class", "points")
+        .selectAll("circle")
+        .data(userpoints)
+        .enter()
+        .append("circle")
+        .attr("class", "point")
+        .attr("r", 1)
+        .attr("transform", function(d) {
+            return "translate(" + projection([d.lat, d.lon]) + ")";
+        })
+        .style('fill', function(d) {
+            return comm_colors[d.Community]
+        })
+        .style("visibility", "hidden");
 
-  data = csv_data;
-  all_comm_stats = get_all_community_stats(data, comm_properties);
-  console.log(all_comm_stats);
-  var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;
+    data = csv_data;
+    all_comm_stats = get_all_community_stats(data, comm_properties);
+    // console.log(all_comm_stats);
+    var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;
 
-  var csv = {};
-  data.forEach(function(d, i){
-          csv[d.geoid] = d
-  })
+    var csv = {};
+    data.forEach(function(d, i) {
+        csv[d.geoid] = d
+    })
 
 
-  fresh_ctss.forEach(function(e, j) {
+    fresh_ctss.forEach(function(e, j) {
         e.properties.part_all_ = Math.round(parseFloat(csv[e.properties.geoid]['part_all_']))
         e.properties.part_hidden_ = Math.round(parseFloat(csv[e.properties.geoid]['part_hidden_']))
         e.properties.part_recipr_ = Math.round(parseFloat(csv[e.properties.geoid]['part_recipr_']))
@@ -250,91 +288,115 @@ function ready(error, nyc, csv_data, comm_properties){
         e.properties.own_occupied = parseFloat(csv[e.properties.geoid].owner_occupied_housing_units)
         e.properties.age = parseFloat(csv[e.properties.geoid].age)
         e.properties.commute = parseFloat(csv[e.properties.geoid].mean_commute_minutes)
-      })
+    })
 
-  cts.selectAll(".tract")
-              .data(fresh_ctss)
-              .enter()
-              .append("path")
-              .attr("class", "tract")
-              .attr("d", path)
-              .attr("id", function(d) {
-                return d.properties.geoid;})
-              .attr("nhd_name", function(d) {
-                return d.properties.NTAName;})
-              .style('opacity', 0.8)
-              .on("mouseover", handleMouseOver)
-              .on("mouseout", handleMouseOut)
-              .style('fill', function(d) { return get_color(d, MODE)})
+    cts.selectAll(".tract")
+        .data(fresh_ctss)
+        .enter()
+        .append("path")
+        .attr("class", "tract")
+        .attr("d", path)
+        .attr("id", function(d) {
+            return d.properties.geoid;
+        })
+        .attr("nhd_name", function(d) {
+            return d.properties.NTAName;
+        })
+        .style('opacity', 0.7)
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut)
+        .style('fill', function(d) {
+            return get_color(d, MODE)
+        })
 
-  // filtered_data = data.filter(function(d){ return $.isNumeric(d.median_income)})
-  // console.log(filtered_data);
-  bins1 = hist_income(data);
-  bins2 = hist_owners(data);
-  bins3 = hist_comm(data);
-  bins4 = hist_age(data);
-  
-  // console.log('Histogram', bins.map(function(d){ return d.length/data.length}));
-  myHist1 = hist1.selectAll("rect")
-                   .data(bins1)
-                   .enter().append("rect")
-                   .attr("class", "bar")
-                   .attr("x", 1)
-                   .attr("transform", function(d) {
-                   return "translate(" + (x1(d.x0)) + "," + ( hist_height -20 - y(d.length/data.length) ) + ")"; })
-                   .attr("width", function(d) { return x1(d.x1) - x1(d.x0) ; })
-                   .attr("height", function(d) { return y(d.length/data.length); })
-                   .style("fill", t.url());
+    // filtered_data = data.filter(function(d){ return $.isNumeric(d.median_income)})
+    // console.log(filtered_data);
+    bins1 = hist_income(data);
+    bins2 = hist_owners(data);
+    bins3 = hist_comm(data);
+    bins4 = hist_age(data);
 
-  hist1.append("g")
-      .attr("transform", "translate(0," + ( hist_height - 17 ) + ")")
-      .call(d3.axisBottom(x1))
+    // console.log('Histogram', bins.map(function(d){ return d.length/data.length}));
+    myHist1 = hist1.selectAll("rect")
+        .data(bins1)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", 1)
+        .attr("transform", function(d) {
+            return "translate(" + (x1(d.x0)) + "," + (hist_height - 20 - y(d.length / data.length)) + ")";
+        })
+        .attr("width", function(d) {
+            return x1(d.x1) - x1(d.x0);
+        })
+        .attr("height", function(d) {
+            return y(d.length / data.length);
+        })
+        .style("fill", t.url());
 
-  myHist2 = hist2.selectAll("rect")
-                   .data(bins2)
-                   .enter().append("rect")
-                   .attr("class", "bar")
-                   .attr("x", 1)
-                   .attr("transform", function(d) {
-                   return "translate(" + (x2(d.x0)) + "," + ( hist_height - 20 - y(d.length/data.length)) + ")"; })
-                   .attr("width", function(d) { return x2(d.x1) - x2(d.x0) ; })
-                   .attr("height", function(d) { return y(d.length/data.length); })
-                   .style("fill", t.url());
+    hist1.append("g")
+        .attr("transform", "translate(0," + (hist_height - 17) + ")")
+        .call(d3.axisBottom(x1))
 
-  hist2.append("g")
-      .attr("transform", "translate(0," +  ( hist_height - 17 ) + ")")
-      .call(d3.axisBottom(x2)
-              .tickFormat(formatPercent));
+    myHist2 = hist2.selectAll("rect")
+        .data(bins2)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", 1)
+        .attr("transform", function(d) {
+            return "translate(" + (x2(d.x0)) + "," + (hist_height - 20 - y(d.length / data.length)) + ")";
+        })
+        .attr("width", function(d) {
+            return x2(d.x1) - x2(d.x0);
+        })
+        .attr("height", function(d) {
+            return y(d.length / data.length);
+        })
+        .style("fill", t.url());
 
-  myHist3 = hist3.selectAll("rect")
-                   .data(bins3)
-                   .enter().append("rect")
-                   .attr("class", "bar")
-                   .attr("x", 1)
-                   .attr("transform", function(d) {
-                   return "translate(" + (x3(d.x0)) + "," + ( hist_height - 20 - y(d.length/data.length)) + ")"; })
-                   .attr("width", function(d) { return x3(d.x1) - x3(d.x0)  ; })
-                   .attr("height", function(d) { return y(d.length/data.length); })
-                   .style("fill", t.url());
+    hist2.append("g")
+        .attr("transform", "translate(0," + (hist_height - 17) + ")")
+        .call(d3.axisBottom(x2)
+            .tickFormat(formatPercent));
 
-  hist3.append("g")
-        .attr("transform", "translate(0," + ( hist_height - 17 ) + ")")
+    myHist3 = hist3.selectAll("rect")
+        .data(bins3)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", 1)
+        .attr("transform", function(d) {
+            return "translate(" + (x3(d.x0)) + "," + (hist_height - 20 - y(d.length / data.length)) + ")";
+        })
+        .attr("width", function(d) {
+            return x3(d.x1) - x3(d.x0);
+        })
+        .attr("height", function(d) {
+            return y(d.length / data.length);
+        })
+        .style("fill", t.url());
+
+    hist3.append("g")
+        .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x3))
-  
 
-  myHist4 = hist4.selectAll("rect")
-                   .data(bins4)
-                   .enter().append("rect")
-                   .attr("class", "bar")
-                   .attr("x", 1)
-                   .attr("transform", function(d) {
-                   return "translate(" + (x4(d.x0)) + "," + ( hist_height - y(d.length/data.length) - 20) + ")"; })
-                   .attr("width", function(d) { return x4(d.x1) - x4(d.x0) -1 ; })
-                   .attr("height", function(d) { return y(d.length/data.length); })
-                   .style("fill", t.url());
 
-  hist4.append("g")
-        .attr("transform", "translate(0," + ( hist_height - 17 )+ ")")
+    myHist4 = hist4.selectAll("rect")
+        .data(bins4)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", 1)
+        .attr("transform", function(d) {
+            return "translate(" + (x4(d.x0)) + "," + (hist_height - y(d.length / data.length) - 20) + ")";
+        })
+        .attr("width", function(d) {
+            return x4(d.x1) - x4(d.x0) - 1;
+        })
+        .attr("height", function(d) {
+            return y(d.length / data.length);
+        })
+        .style("fill", t.url());
+
+    hist4.append("g")
+        .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x4))
 
 }
@@ -346,64 +408,76 @@ function ready(error, nyc, csv_data, comm_properties){
 d3.select(window).on('resize', MapSizeChange);
 
 function MapSizeChange() {
-      // var ratio  = Math.min($(window).height()/initial_height, $(window).width() / initial_width);
+    // var ratio  = Math.min($(window).height()/initial_height, $(window).width() / initial_width);
     //   // d3.select("svg").attr("transform", "scale(" + ratio + ")");
     console.log('resizing!')
-    if($(window).width() >=770){
-        width = $(window).width()*0.666;
-    } else { width = $(window).width()}
+    if ($(window).width() >= 770) {
+        width = $(window).width() * 0.666;
+    } else {
+        width = $(window).width()
+    }
     var height = $(window).height()
 
     // update projection
     projection
         .translate([width / 2, height / 2])
-        .scale(width*78);
+        .scale(width * 78);
 
     // resize the map
     cts.selectAll(".tract").attr('d', path);
+    scatter.attr("transform", function(d) {
+        return "translate(" + projection([d.lat, d.lon]) + ")";
+    })
 
 }
 
 
 //  DECOLORIZE OTHER COMMUNITIES
-function decolorize_other_communities(d,i){
+function decolorize_other_communities(d, i) {
 
-  cts.selectAll(".tract")
-       .filter(function(dd) { return dd.properties[MODE] != d.properties[MODE]; })        // <== This line
-       .style('opacity', .2 );
+    cts.selectAll(".tract")
+        .filter(function(dd) {
+            return dd.properties[MODE] != d.properties[MODE];
+        }) // <== This line
+        .style('opacity', .2);
 }
 
-function colorize_back(d, i){
-  cts.selectAll(".tract")
-     .style('opacity', 0.8);
+function colorize_back(d, i) {
+    cts.selectAll(".tract")
+        .style('opacity', .7);
 }
 
 
 // RADIO BUTTON SWITCH
 $('form#partition input[type="radio"]').on('change', function(e) {
     MODE = document.querySelector('input[name="partition"]:checked').value;
-    console.log(MODE == 'user');
-    console.log('Mode is:', MODE);
+    // console.log(MODE == 'user');
+    // console.log('Mode is:', MODE);
     update_partition(MODE);
 });
 
 
-function update_partition(MODE){
-  console.log('updation partition')
-  if(MODE === "part_user"){
-    console.log('!!!!')
-    cts.selectAll(".tract")
-       .style('fill-opacity', 0.8)
-       .style('fill', function(d) { return get_color(d, MODE)})
+function update_partition(MODE) {
+    console.log('updation partition')
+    if (MODE === "part_user") {
 
-    // svg.select('image').style('visibility', 'visible');
 
-  } else {
-  
-  // svg.select('image').style('visibility', 'hidden');
+        cts.selectAll(".tract")
+            .style('fill-opacity', 0.4)
+            .style('fill', function(d) {
+                return get_color(d, MODE)
+            })
+        console.log(scatter);
+        scatter.style("visibility", 'visible');
 
-  cts.selectAll(".tract")
-      .style('fill-opacity', 0.8)
-      .style('fill', function(d) { return get_color(d, MODE)})
-  }
+    } else {
+
+        scatter.style("visibility", "hidden");
+
+        cts.selectAll(".tract")
+            .style('fill-opacity', .7)
+            .style('fill', function(d) {
+                return get_color(d, MODE)
+            })
+    }
 }

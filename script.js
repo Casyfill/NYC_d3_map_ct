@@ -171,18 +171,14 @@ var comm_colors = ["red", "blue", "green", "yellow", "purple",
     'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'
 ];
 
-function numberRange (start, end) {
-  return new Array(end - start).fill().map((d, i) => i + start);
-}
 
-var z = d3.scaleOrdinal(comm_colors).domain(0, comm_colors.length);
 
 
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
 
     if (!isNaN(d.properties[mode])) {
-        return z(d.properties[mode]);
+        return comm_colors[d.properties[mode]];
     } else {
         return t.url()
     }
@@ -405,7 +401,7 @@ function scatter(error, userpoints){
         })
         .style('fill-opacity', .4)
         .style('fill', function(d) {
-            return z(d.Community)
+            return comm_colors[d.Community]
         })
         .style("visibility", "hidden");
 
@@ -467,8 +463,9 @@ $('form#partition input[type="radio"]').on('change', function(e) {
 
 
 function update_partition(MODE) {
-    console.log('updation partition');
+    console.log('updation partition')
     if (MODE === "part_user") {
+
 
         cts.selectAll(".tract")
             .style('fill-opacity', 0.4)

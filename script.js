@@ -241,17 +241,16 @@ d3.queue(3)
     .defer(d3.json, "data/ct2010s.json")
     .defer(d3.csv, "data/combined_data4.csv")
     .defer(d3.json, "data/communities_stats3.json")
-    .defer(d3.csv, "data/users.csv")
     .await(ready);
 
 
-function ready(error, nyc, csv_data, comm_properties, userpoints) {
-    if (error) throw error;
-    populate_empty_table(null_ct, ct_tbody);
-    populate_empty_table(null_cm, cm_tbody);
+d3.queue(1)
+    .defer(d3.csv, "data/users.csv")
+    .await(scatter)
 
 
-    scatter = svg.append("g")
+function scatter(error, userpoints){
+  scatter = svg.append("g")
         .attr("class", "points")
         .selectAll("circle")
         .data(userpoints)
@@ -269,7 +268,15 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         })
         .style("visibility", "hidden");
 
-    data = csv_data;
+};
+
+function ready(error, nyc, data, comm_properties) {
+    if (error) throw error;
+    populate_empty_table(null_ct, ct_tbody);
+    populate_empty_table(null_cm, cm_tbody);
+
+
+    // data = csv_data;
     all_comm_stats = get_all_community_stats(data, comm_properties);
     // console.log(all_comm_stats);
     var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;

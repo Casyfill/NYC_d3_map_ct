@@ -467,9 +467,8 @@ $('form#partition input[type="radio"]').on('change', function(e) {
 
 
 function update_partition(MODE) {
-    console.log('updation partition')
+    console.log('updation partition');
     if (MODE === "part_user") {
-
 
         cts.selectAll(".tract")
             .style('fill-opacity', 0.4)

@@ -23,10 +23,6 @@ var svg = d3.select("#svg-container")
     .attr("class", "map");
 
 var scatter;
-// svg.append('text')
-//    .attr("id", "histtitle")
-//    .text("Household Income, Normalized")
-//    .attr("transform", 'translate(4,4)');
 
 var hist_height = Math.round(.24 * (d3.select('#stats').node().getBoundingClientRect()['height'] - 146 - 4 * 42));
 var hist_width = d3.select('#comm_stats').node().getBoundingClientRect()['width'];
@@ -175,14 +171,18 @@ var comm_colors = ["red", "blue", "green", "yellow", "purple",
     'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'
 ];
 
+function numberRange (start, end) {
+  return new Array(end - start).fill().map((d, i) => i + start);
+}
 
+var z = d3.scaleOrdinal(comm_colors).domain(0, comm_colors.length);
 
 
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
 
     if (!isNaN(d.properties[mode])) {
-        return comm_colors[d.properties[mode]];
+        return z(d.properties[mode]);
     } else {
         return t.url()
     }
@@ -243,32 +243,6 @@ d3.queue(3)
     .defer(d3.json, "data/communities_stats3.json")
     .await(ready);
 
-
-d3.queue(1)
-    .defer(d3.csv, "data/users.csv")
-    .await(scatter)
-
-
-function scatter(error, userpoints){
-  scatter = svg.append("g")
-        .attr("class", "points")
-        .selectAll("circle")
-        .data(userpoints)
-        .enter()
-        .append("circle")
-        .attr("class", "point")
-        .attr("r", .7)
-        .attr("pointer-events", "none")
-        .attr("transform", function(d) {
-            return "translate(" + projection([d.lat, d.lon]) + ")";
-        })
-        .style('fill-opacity', .4)
-        .style('fill', function(d) {
-            return comm_colors[d.Community]
-        })
-        .style("visibility", "hidden");
-
-};
 
 function ready(error, nyc, data, comm_properties) {
     if (error) throw error;
@@ -410,6 +384,32 @@ function ready(error, nyc, data, comm_properties) {
 
 }
 
+
+d3.queue(1)
+    .defer(d3.csv, "data/users.csv")
+    .await(scatter)
+
+
+function scatter(error, userpoints){
+  scatter = svg.append("g")
+        .attr("class", "points")
+        .selectAll("circle")
+        .data(userpoints)
+        .enter()
+        .append("circle")
+        .attr("class", "point")
+        .attr("r", .7)
+        .attr("pointer-events", "none")
+        .attr("transform", function(d) {
+            return "translate(" + projection([d.lat, d.lon]) + ")";
+        })
+        .style('fill-opacity', .4)
+        .style('fill', function(d) {
+            return z(d.Community)
+        })
+        .style("visibility", "hidden");
+
+};
 
 
 

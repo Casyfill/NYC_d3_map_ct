@@ -484,3 +484,8 @@ $('.dropdown-menu a').click(function(d) {
 
     });
 
+
+$('.btn').button();
+$("#download_btn").click(function(d) {
+    console.log('downoload!')
+});

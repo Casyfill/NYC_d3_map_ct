@@ -66,8 +66,8 @@
         <div class="chart-wrapper" id="modeselector">
           <div class="chart-title"> Partition mode </div>
 
-          <div id="myDropdown" class="dropdown float-right">
-            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">All mentions
+          <span id="myDropdown" class="dropdown float-left">
+            <button class="btn btn-primary btn-sm dropdown-toggle float-left" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">All mentions
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dLabel">
@@ -76,7 +76,9 @@
               <li><a href='#' value="part_hidden_">Hidden links</a></li>
               <li><a href='#' value="part_user">User-based</a></li>
             </ul>
-          </div>
+          </span>
+
+          <button type="button" id="download_btn" class="btn btn-sm btn-primary btn-disabled">Download</button>
          
         </div>
 

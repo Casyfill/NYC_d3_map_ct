@@ -238,10 +238,10 @@ function handleMouseOut(d, i) {
 
 //  LOAD DATA
 d3.queue(3)
-    .defer(d3.json, "data/ct2010s.json")
-    .defer(d3.csv, "data/combined_data4.csv")
-    .defer(d3.json, "data/communities_stats3.json")
-    .defer(d3.csv, "data/users.csv")
+    .defer(d3.json, "data/geo/ct2010s.json")
+    .defer(d3.csv, "data/communities/2017_10_15_combined_data.csv")
+    .defer(d3.json, "data/communities_stats/communities_stats3.json")
+    .defer(d3.csv, "data/users/2017_10_15_users.csv")
     .await(ready);
 
 
@@ -270,15 +270,14 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .style("visibility", "hidden");
 
     data = csv_data;
+
     all_comm_stats = get_all_community_stats(data, comm_properties);
-    // console.log(all_comm_stats);
     var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;
 
     var csv = {};
     data.forEach(function(d, i) {
         csv[d.geoid] = d
     })
-
 
     fresh_ctss.forEach(function(e, j) {
         e.properties.part_all_ = Math.round(parseFloat(csv[e.properties.geoid]['part_all_']))
@@ -465,7 +464,7 @@ function update_partition(MODE) {
 
 
         cts.selectAll(".tract")
-            .style('fill-opacity', 0.4)
+            .style('fill-opacity', 0.6)
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })

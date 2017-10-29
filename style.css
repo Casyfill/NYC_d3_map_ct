@@ -53,6 +53,7 @@ path.back {
 p#histtitle {
   font: 700 7px Lato;
   text-align: left;
+  color:black;
 }
 
 h1#title{
@@ -84,6 +85,7 @@ text {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
   pointer-events: none;
+  color:black;
 }
 
 .header{
@@ -120,8 +122,7 @@ div.chart-title{
 }
 
 div #modeselector {
-  height:10vh;
-  max-height: 100px;
+  height:50px;
   width:100%;
 }
 
@@ -174,7 +175,6 @@ p.tooltip {
 }
 
 td, th {
-    /*padding: 1px 4px;*/
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 12px;
 }
@@ -185,30 +185,6 @@ table.fixed td:nth-of-type(1) {width:100px;}/*Setting the width of column 1.*/
 table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}/*Setting the width of column 2.*/
 
 
-/* button */
-.button {
-
-  text-transform: uppercase;
-  padding-bottom: 6px;
-  font: 700 12px Lato;
-  text-align: center;
-}
-
-.button>a {
-    padding: 13px 26px;
-    min-width: 90px;
-    background: #373931;
-    display: inline-block;
-    padding: 13px;
-    min-width: 140px;
-    border-radius: 50px;
-    color: #A1A4A4;
-    text-decoration: none;
-    transition: background .3s;
-    .button--blue a:
-}
-
-.button a:hover{background:#7A7A77}
 
 .flex {
   display: flex;
@@ -217,4 +193,22 @@ table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}/*Setting th
   align-items:flex-start;
   flex-wrap:wrap;
   align-content:stretch;
+}
+
+.btn-primary{
+  color: #ddd;
+  background-color: #232323;
+  border-color: #4a4e51;
+};
+
+
+.btn-primary {
+  color: #ddd;
+  background-color: #232323;
+  border-color: #4a4e51;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+  color: #ffffff;
+  background-color: #4a4e51;
+  border-color: #5b5b5b;
 }

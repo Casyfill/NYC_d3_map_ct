@@ -23,6 +23,7 @@ var svg = d3.select("#svg-container")
     .attr("class", "map");
 
 var scatter;
+var dd = d3.select('#myDropdown')
 // svg.append('text')
 //    .attr("id", "histtitle")
 //    .text("Household Income, Normalized")
@@ -170,8 +171,7 @@ var data;
 var comm_colors = ["red", "blue", "green", "yellow", "purple",
     "orange", "teal", "pink", "steelblue", 'magenta',
     "black", "grey", "darkgreen", "darkred", "darkblue",
-    "lime", "beige", "azure", "aliceblue", 'burlywood',
-    "darkseagreen", 'darkslategray', 'forestgreen', 'khaki', 'lightsalmon',
+    "lime", "beige", 'burlywood', "darkseagreen", 'darkslategray', 'forestgreen', 'khaki', 'lightsalmon',
     'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'
 ];
 
@@ -216,7 +216,7 @@ function handleMouseOver(d, i) {
     // console.log(MODE, 'Tract:', d.properties);
 
     if (!isNaN(d.properties[MODE])) {
-        console.log(d);
+        // console.log(d);
         decolorize_other_communities(d, i, MODE);
         populate_ct_table(d, i, MODE);
         populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
@@ -303,7 +303,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .attr("nhd_name", function(d) {
             return d.properties.NTAName;
         })
-        .style('opacity', 0.7)
+        .style('opacity', 0.9)
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut)
         .style('fill', function(d) {
@@ -445,17 +445,9 @@ function decolorize_other_communities(d, i) {
 
 function colorize_back(d, i) {
     cts.selectAll(".tract")
-        .style('opacity', .7);
+        .style('opacity', .9);
 }
 
-
-// RADIO BUTTON SWITCH
-$('form#partition input[type="radio"]').on('change', function(e) {
-    MODE = document.querySelector('input[name="partition"]:checked').value;
-    // console.log(MODE == 'user');
-    // console.log('Mode is:', MODE);
-    update_partition(MODE);
-});
 
 
 function update_partition(MODE) {
@@ -464,7 +456,7 @@ function update_partition(MODE) {
 
 
         cts.selectAll(".tract")
-            .style('fill-opacity', 0.6)
+            .style('fill-opacity', 0.5)
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
@@ -476,9 +468,19 @@ function update_partition(MODE) {
         scatter.style("visibility", "hidden");
 
         cts.selectAll(".tract")
-            .style('fill-opacity', .7)
+            .style('fill-opacity', .9)
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
     }
 }
+
+
+$('.dropdown-menu a').click(function(d) {
+        g = this;
+        dd.select("button").text(g.text) // switch header
+        console.log(g.getAttribute("value"));
+        update_partition(g.getAttribute("value"));
+
+    });
+

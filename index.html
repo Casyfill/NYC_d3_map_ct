@@ -64,18 +64,18 @@
       <div class="col-sm-4" id="infocolumn">
         
         <div class="chart-wrapper" id="modeselector">
-          <div class="chart-title">
-           Partition
-          </div>
-          <div class="chart-stage" id="partition_section">
-            <div id="forms" class="flex">
-              <form action="" id="partition">
-                <input type="radio" name="partition" value="part_all_"  checked> All mentions<br>
-                <input type="radio" name="partition" value="part_recipr_"> Reciprocal mentions<br>
-                <input type="radio" name="partition" value="part_hidden_"> Hidden links<br>
-                <input type="radio" name="partition" value="part_user"> User-based
-              </form>
-            </div>
+          <div class="chart-title"> Partition mode </div>
+
+          <div id="myDropdown" class="dropdown float-right">
+            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">All mentions
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dLabel">
+              <li><a href='#' value="part_all_">All mentions</a></li>
+              <li><a href='#' value="part_recipr_">Reciprocal mentions</a></li>
+              <li><a href='#' value="part_hidden_">Hidden links</a></li>
+              <li><a href='#' value="part_user">User-based</a></li>
+            </ul>
           </div>
          
         </div>
@@ -92,15 +92,15 @@
                   </div>
                 
                   <div id="owners_container" style="padding-top: 5px">
-                   <p id="histtitle" style="font: 700 10px Lato;padding-top: 10px"> Owner-occupied households, %</p>
+                   <p id="histtitle" > Owner-occupied households, %</p>
                   </div>
                 
                   <div id="commute_container" style="padding-top: 5px;">
-                   <p id="histtitle" style="font: 700 10px Lato;padding-top: 10px"> Average Commute, Min.</p>
+                   <p id="histtitle" > Average Commute, Min.</p>
                   </div>
 
                   <div id="age_container" style="padding-top: 5px;">
-                   <p id="histtitle" style="font: 700 10px Lato;padding-top: 10px"> Average Population Age, Years</p>
+                   <p id="histtitle" > Average Population Age, Years</p>
                   </div>
 
               </div>
@@ -116,25 +116,24 @@
           </div>
           <div class="chart-stage">
           </div>
-          <!-- <div class="chart-notes">
-            This is a sample text region to describe this chart.
-          </div> -->
+  
         </div>
-
+<!-- 
         <div class="chart-wrapper" id='download_section'>
           
           <div class="chart-stage">
           <p class="button" style="padding-top: 10px">
             <a href="#" id='download' class='btn' style="max-height: 30px">download</a>
           </p>
-          <!-- <p class="button" style="padding-top: 10px">
+          <p class="button" style="padding-top: 10px">
             <a href="#" id='download_stats' class='btn'>download stats</a>
-          </p> -->
+          </p>
           </div>
-          <!-- <div class="chart-notes">
+          <div class="chart-notes">
             Notes go down here
-          </div> -->
+          </div>
         </div>
+         -->
       </div>
 
 

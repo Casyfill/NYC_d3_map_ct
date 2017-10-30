@@ -15,7 +15,7 @@ function get_community_stats(csv_data, comm_column){
 function get_all_community_stats(csv_data, comm_properties){
 	var all_comm_stats = {}; //= comm_properties;
 
-	comm_columns = ['part_all_','part_hidden_','part_recipr_', 'part_user'];
+	comm_columns = ['part_all_','part_hidden_','part_recipr_', 'part_user', 'part_user_h'];
 	comm_columns.forEach(function(comm_column, i){
 		
 		var data = d3.nest()

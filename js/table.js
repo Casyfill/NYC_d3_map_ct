@@ -52,14 +52,14 @@ function populate_ct_table(d,i, mode){
 function populate_cm_table(d,i, mode){
     
 
-    if(mode != 'part_user'){
+    if(mode != 'part_user' && mode != 'part_user_h'){
       var new_data = [{'key':'Community N', 'value':d.key},
-                    {'key':'Tracts', 'value':d.value.tracts},
-                    {'key':'Population', 'value':f(d.value.population)},
-                    {'key':"Users", 'value':f(d.value.communityUsers)},
-                    {'key':"Out Connections", 'value':f(d.value.communityOutConnections)},
-                    {'key':"In Connections", 'value':f(d.value.communityInConnections)},
-                    {'key':"Internal Connections", 'value':ff(d.value.communityInternalConnections)}];
+                      {'key':'Tracts', 'value':d.value.tracts},
+                      {'key':'Population', 'value':f(d.value.population)},
+                      {'key':"Users", 'value':f(d.value.communityUsers)},
+                      {'key':"Out Connections", 'value':f(d.value.communityOutConnections)},
+                      {'key':"In Connections", 'value':f(d.value.communityInConnections)},
+                      {'key':"Internal Connections", 'value':ff(d.value.communityInternalConnections)}];
     } else{
       var new_data = [{'key':'Community N', 'value':d.key},
                       {'key':'Tracts', 'value':d.value.tracts},
@@ -121,7 +121,6 @@ function populate_empty_table(null_data, stbody){
 
 function empty_table(null_data, stbody){
     // create a row for each object in the data
-    console.log('nulldata', null_data);
     var rows = stbody.selectAll("tr")
                      .data(null_data, function(d) { return d.key });
     
@@ -132,7 +131,7 @@ function empty_table(null_data, stbody){
     
     var cells = new_rows.merge(rows).selectAll('td')
     // console.log(cells);
-    cells.data(function(row) { console.log(row); return columns.map(function(column) { return {column: column, value: row[column]};
+    cells.data(function(row) { return columns.map(function(column) { return {column: column, value: row[column]};
                       });
                     }).enter().append('td').text(function (d) { return d.value; });
 }

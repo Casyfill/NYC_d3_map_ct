@@ -24,6 +24,9 @@ var svg = d3.select("#svg-container")
 
 var scatter;
 var dd = d3.select('#myDropdown')
+
+var gradient = d3.scaleLinear().domain([6, 7, 11]).range(['#CEF4FF', '#00AEFF', '#01679E']);
+var legend = colorbar();
 // svg.append('text')
 //    .attr("id", "histtitle")
 //    .text("Household Income, Normalized")
@@ -214,15 +217,18 @@ var cm_tbody = cm_table.append('tbody');
 function handleMouseOver(d, i) {
     // Add interactivity
     // console.log(MODE, 'Tract:', d.properties);
+    if (MODE == 'part_user_h'){
+        var lmode = 'part_user'
+    } else {var lmode = MODE};
 
-    if (!isNaN(d.properties[MODE])) {
-        console.log(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
-        decolorize_other_communities(d, i, MODE);
-        populate_ct_table(d, i, MODE);
-        populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]),i, MODE);
-        // console.log(d.properties[MODE]);
+
+    if (!isNaN(d.properties[lmode])) {
+        decolorize_other_communities(d, i, lmode);
+        populate_ct_table(d, i, );
+        populate_cm_table(get_community_datas(d.properties[lmode], all_comm_stats[lmode]),i, lmode);
+        // console.log(d.properties[lmode]);
         update_histograms(data.filter(function(dd) {
-            return dd[MODE] == d.properties[MODE]
+            return dd[lmode] == d.properties[lmode]
         }))
     }
 }
@@ -231,8 +237,7 @@ function handleMouseOver(d, i) {
 function handleMouseOut(d, i) {
     empty_table(null_ct, ct_tbody);
 
-    if(MODE == 'part_user'){
-        console.log('user!');
+    if(MODE == 'part_user' || MODE == 'part_user_h'){
         empty_table(null_cm_users, cm_tbody);
     } else {
         empty_table(null_cm, cm_tbody);
@@ -277,7 +282,8 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .style("visibility", "hidden");
 
     data = csv_data;
-
+    data['part_user_h'] = data['part_user'];
+    comm_properties['part_user_h'] = comm_properties['part_user'];
     all_comm_stats = get_all_community_stats(data, comm_properties);
     var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;
 
@@ -291,6 +297,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         e.properties.part_hidden_ = Math.round(parseFloat(csv[e.properties.geoid]['part_hidden_']))
         e.properties.part_recipr_ = Math.round(parseFloat(csv[e.properties.geoid]['part_recipr_']))
         e.properties.part_user = Math.round(parseFloat(csv[e.properties.geoid]['part_user']))
+        e.properties.part_user_h = Math.round(parseFloat(csv[e.properties.geoid]['part_user']))
         e.properties.population = parseInt(csv[e.properties.geoid].population)
         e.properties.income = parseInt(csv[e.properties.geoid].median_income)
         e.properties.own_occupied = parseFloat(csv[e.properties.geoid].owner_occupied_housing_units)
@@ -468,13 +475,33 @@ function update_partition(MODE) {
             })
         // console.log(scatter);
         scatter.style("visibility", 'visible');
+        legend.style("visibility", "hidden");
 
         console.log('change table!');
         empty_table(null_cm_users, cm_tbody);
 
-    } else {
+    } else if (MODE === "part_user_h") {
+        console.log('!!!!')
+        scatter.style("visibility", "hidden");
+        legend.style("visibility", "visible")
+
+
+        cts.selectAll(".tract")
+            .style('fill-opacity', .9)
+            .style('fill', function(d) {
+                if (!isNaN(d.properties[MODE])) {
+                // console.log(all_comm_stats);
+                var community = get_community_datas(d.properties['part_user'], all_comm_stats['part_user']);
+                return gradient(community["value"]['OpinionChange']);
+                } else {return t.url();}
+            })
+
+        empty_table(null_cm_users, cm_tbody);
+
+    }else {
 
         scatter.style("visibility", "hidden");
+        legend.style("visibility", "hidden");
 
         cts.selectAll(".tract")
             .style('fill-opacity', .9)
@@ -502,3 +529,55 @@ $('.btn').button();
 $("#download_btn").click(function(d) {
     console.log('downoload!')
 });
+
+
+
+
+function colorbar(){
+      var key = svg.append('g')
+                   .attr("id", "legend")
+                   .attr("width", 120).attr("height", 300)
+                   .attr("transform", "translate(12,150)");
+
+      var legend = key.append("defs").append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("y1", "100%").attr("x1", "0%")
+        .attr("y2", "0%").attr("x2", "0%")
+        .attr("spreadMethod", "pad");
+
+      legend.append("stop").attr("offset", "0%")
+        .attr("stop-color", '#D4ECFA')
+        .attr("stop-opacity", 1);
+
+      legend.append("stop").attr("offset", "50%")
+        .attr("stop-color", '#53baf3')
+        .attr("stop-opacity", 1);
+
+      legend.append("stop").attr("offset", "100%")
+        .attr("stop-color", '#004C74')
+        .attr("stop-opacity", 1);
+
+      key.append("rect")
+         .attr("width", 10)
+         .attr("height", 300)
+         .style("fill", "url(#gradient)")
+
+      var y = d3.scaleLinear().range([0, 300]).domain([11, 6]);
+      var yAxis = d3.axisRight(y)
+                    .tickValues([6, 
+                                 (6 + 11)/2,
+                                 11])
+                    .tickFormat(ff);
+
+      key.append("g")
+         .attr("class", "y axis")
+         .call(yAxis)
+         .attr("transform", "translate(15, 0)")
+         .append("text")
+         .attr("dy", ".62em")
+         .style("text-anchor", "start")
+         .text('Susceptibility_hidden');
+
+      key.style("visibility", "hidden");
+      return key;
+}

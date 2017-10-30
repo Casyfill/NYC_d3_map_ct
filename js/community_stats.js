@@ -34,7 +34,13 @@ function get_all_community_stats(csv_data, comm_properties){
 
 		  	// d.value = Object.assign(d.value, result[0])
 		  	cols = ["communityUsers","communityOutConnections",
-            		"communityInConnections", "communityInternalConnections"]
+            		"communityInConnections", "communityInternalConnections"];
+
+            if(comm_column == 'part_user'){
+            	cols = cols.concat(["OpinionChange", "MenOpinionChange", 
+            		"HNetDensity", "MNetDensity", "SpatialDiversity", "SpatialDiversityIndividual",
+            		"HNodeLSTD", "MNodeLSTD"]);
+            } 
             for (var i = 0; i < cols.length; i++){
             		col = cols[i];
     				d.value[col] = (result[0] !== undefined) ? result[0][col] : null;

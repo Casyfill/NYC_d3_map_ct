@@ -216,10 +216,10 @@ function handleMouseOver(d, i) {
     // console.log(MODE, 'Tract:', d.properties);
 
     if (!isNaN(d.properties[MODE])) {
-        // console.log(d);
+        console.log(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
         decolorize_other_communities(d, i, MODE);
         populate_ct_table(d, i, MODE);
-        populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]));
+        populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]),i, MODE);
         // console.log(d.properties[MODE]);
         update_histograms(data.filter(function(dd) {
             return dd[MODE] == d.properties[MODE]
@@ -230,7 +230,12 @@ function handleMouseOver(d, i) {
 
 function handleMouseOut(d, i) {
     empty_table(null_ct, ct_tbody);
-    empty_table(null_cm, cm_tbody);
+
+    if(MODE == 'part_user'){
+        console.log('user!');
+        empty_table(null_cm_users, cm_tbody);
+    }
+    
     colorize_back();
     update_histograms(data);
 }
@@ -240,7 +245,7 @@ function handleMouseOut(d, i) {
 d3.queue(3)
     .defer(d3.json, "data/geo/ct2010s.json")
     .defer(d3.csv, "data/communities/2017_10_15_combined_data.csv")
-    .defer(d3.json, "data/communities_stats/communities_stats3.json")
+    .defer(d3.json, "data/communities_stats/communities_stats4.json")
     .defer(d3.csv, "data/users/2017_10_15_users.csv")
     .await(ready);
 
@@ -409,8 +414,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
 d3.select(window).on('resize', MapSizeChange);
 
 function MapSizeChange() {
-    // var ratio  = Math.min($(window).height()/initial_height, $(window).width() / initial_width);
-    //   // d3.select("svg").attr("transform", "scale(" + ratio + ")");
+
     console.log('resizing!')
     if ($(window).width() >= 770) {
         width = $(window).width() * 0.666;
@@ -460,8 +464,11 @@ function update_partition(MODE) {
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
-        console.log(scatter);
+        // console.log(scatter);
         scatter.style("visibility", 'visible');
+
+        console.log('change table!');
+        empty_table(null_cm_users, cm_tbody);
 
     } else {
 
@@ -472,6 +479,8 @@ function update_partition(MODE) {
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
+
+        empty_table(null_cm, cm_tbody);
     }
 }
 
@@ -479,8 +488,10 @@ function update_partition(MODE) {
 $('.dropdown-menu a').click(function(d) {
         g = this;
         dd.select("button").text(g.text) // switch header
-        console.log(g.getAttribute("value"));
-        update_partition(g.getAttribute("value"));
+        
+        MODE = g.getAttribute("value");
+        console.log(MODE);
+        update_partition(MODE);
 
     });
 

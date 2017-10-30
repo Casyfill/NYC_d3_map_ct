@@ -25,7 +25,7 @@ var svg = d3.select("#svg-container")
 var scatter;
 var dd = d3.select('#myDropdown')
 
-var gradient = d3.scaleLinear().domain([6, 7, 11]).range(['#CEF4FF', '#00AEFF', '#01679E']);
+var gradient = d3.scaleLinear().domain([6, 7, 11]).range(['#ddf5dd', '#4088a8', '#2e2b62']);
 var legend = colorbar();
 // svg.append('text')
 //    .attr("id", "histtitle")
@@ -487,7 +487,7 @@ function update_partition(MODE) {
 
 
         cts.selectAll(".tract")
-            .style('fill-opacity', .9)
+            .style('fill-opacity', 1)
             .style('fill', function(d) {
                 if (!isNaN(d.properties[MODE])) {
                 // console.log(all_comm_stats);
@@ -531,8 +531,6 @@ $("#download_btn").click(function(d) {
 });
 
 
-
-
 function colorbar(){
       var key = svg.append('g')
                    .attr("id", "legend")
@@ -546,15 +544,15 @@ function colorbar(){
         .attr("spreadMethod", "pad");
 
       legend.append("stop").attr("offset", "0%")
-        .attr("stop-color", '#D4ECFA')
+        .attr("stop-color", '#ddf5dd')
         .attr("stop-opacity", 1);
 
       legend.append("stop").attr("offset", "50%")
-        .attr("stop-color", '#53baf3')
+        .attr("stop-color", '#4088a8')
         .attr("stop-opacity", 1);
 
       legend.append("stop").attr("offset", "100%")
-        .attr("stop-color", '#004C74')
+        .attr("stop-color", '#2e2b62')
         .attr("stop-opacity", 1);
 
       key.append("rect")

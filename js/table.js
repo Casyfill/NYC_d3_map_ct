@@ -2,6 +2,7 @@ var columns = ['key', 'value'];
 var f = d3.format(",");
 var fv = d3.format("$,");
 var ff = d3.format(".2f");
+var ffff = d3.format(".4f");
 var null_ct = [],
     null_cm_users = [],
     null_cm = [];
@@ -15,8 +16,10 @@ var null_ct = [],
 
 ['Community N', 'Tracts', 'Population', 'Users', 
  'Susceptibility_hidden',  'Susceptibility_mentioning', 
- 'NetworkDensity_hidden'].forEach(function(d){null_cm_users.push({'key':d, 'value':'NA'})});
-
+ 'NetworkDensity_hidden', 'NetworkDensity_mentioning',
+ 'SpatialDiversity', 'SpatialDiversityIndividual',
+ 'NodeDiversity_hidden', 'NodeDiversity_mentioning'].forEach(function(d){null_cm_users.push({'key':d, 'value':'NA'})});
+console.log('user_comm', null_cm_users);
 
 function replacer(value){
   if (isNaN(value)){return 'NA'} else {return fv(value)}
@@ -64,12 +67,19 @@ function populate_cm_table(d,i, mode){
                       {'key':"Users", 'value':f(d.value.communityUsers)},
                       {'key':"Susceptibility_hidden", 'value':f(d.value.OpinionChange)},
                       {'key':"Susceptibility_mentioning", 'value':f(d.value.MenOpinionChange)},
-                      {'key':"NetworkDensity_hidden", 'value':ff(d.value.HNetDensity)}];
+                      {'key':"NetworkDensity_hidden", 'value':ff(d.value.HNetDensity)},
+                      {'key':"NetworkDensity_mentioning", 'value':ffff(d.value.MNetDensity)},
+                      {'key':"SpatialDiversity", 'value':ff(d.value.SpatialDiversity)},
+                      {'key':"SpatialDiversityIndividual", 'value':ff(d.value.SpatialDiversityIndividual)},
+                      {'key':"NodeDiversity_hidden", 'value':ffff(d.value.HNodeLSTD)},
+                      {'key':"NodeDiversity_mentioning", 'value':ffff(d.value.MNodeLSTD)}];
     }
 
     // create a row for each object in the data
     var rows = cm_tbody.selectAll("tr")
                        .data(new_data);
+    rows.exit().remove();
+    rows.enter().append('tr');
 
     // create a cell in each row for each column
     var cells = rows.selectAll("td");
@@ -111,15 +121,18 @@ function populate_empty_table(null_data, stbody){
 
 function empty_table(null_data, stbody){
     // create a row for each object in the data
+    console.log('nulldata', null_data);
     var rows = stbody.selectAll("tr")
-                       .data(null_data);
+                     .data(null_data, function(d) { return d.key });
+    
+    rows.exit().remove();
+    var new_rows = rows.enter().append('tr');
 
     // create a cell in each row for each column
-    var cells = rows.selectAll("td");
-    cells.data(function(row) {
-                    return columns.map(function(column) {
-                        return {column: column, value: row[column]};
+    
+    var cells = new_rows.merge(rows).selectAll('td')
+    // console.log(cells);
+    cells.data(function(row) { console.log(row); return columns.map(function(column) { return {column: column, value: row[column]};
                       });
-                    })
-                .html(function(d) { return d.value; });
+                    }).enter().append('td').text(function (d) { return d.value; });
 }

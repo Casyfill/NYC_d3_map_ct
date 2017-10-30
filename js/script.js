@@ -234,6 +234,8 @@ function handleMouseOut(d, i) {
     if(MODE == 'part_user'){
         console.log('user!');
         empty_table(null_cm_users, cm_tbody);
+    } else {
+        empty_table(null_cm, cm_tbody);
     }
     
     colorize_back();

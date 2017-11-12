@@ -25,7 +25,10 @@ var svg = d3.select("#svg-container")
 var scatter;
 var dd = d3.select('#myDropdown')
 
-var gradient = d3.scaleLinear().domain([6, 7, 11]).range(['#ddf5dd', '#4088a8', '#2e2b62']);
+var gradient = d3.scaleLinear().domain([6, 7, 9, 11]).range(['#050c25', '#3a248a',
+                                                             '#8a32c1', '#d748cc', 
+                                                             '#ff6ec1', '#ffa5bc', 
+                                                             '#ffe1da']);
 var legend = colorbar();
 // svg.append('text')
 //    .attr("id", "histtitle")
@@ -171,12 +174,23 @@ var all_comm_stats;
 var data;
 
 //  Community colors
-var comm_colors = ["red", "blue", "green", "yellow", "purple",
-    "orange", "teal", "pink", "steelblue", 'magenta',
-    "black", "grey", "darkgreen", "darkred", "darkblue",
-    "lime", "beige", 'burlywood', "darkseagreen", 'darkslategray', 'forestgreen', 'khaki', 'lightsalmon',
-    'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'
+// var comm_colors = ["red", "blue", "green", "yellow", "purple",
+//     "orange", "teal", "pink", "steelblue", 'magenta',
+//     "black", "grey", "darkgreen", "darkred", "darkblue",
+//     "lime", "beige", 'burlywood', "darkseagreen", 'darkslategray', 'forestgreen', 'khaki', 'lightsalmon',
+//     'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'
+// ];
+
+
+var comm_colors = ["#d67966", "#7bb3ce", "#56ce6c", "b2ef6e", "#85c43c",
+    "#e8b245", "#7fefc4", "#fcbaea", "#539ca5", '#8154a5',
+    "black", '#0A8FCC', '#00AEFF', '#3DE8DF', '#732AFF', '#E94FB5','#EDBFA5',
+                   '#E0E572', '#23E280', '#CEF4FF'
 ];
+
+// var comm_colors = ['#022864', '#01679E', '#0A8FCC', '#00AEFF', 
+//                    '#3DE8DF', '#732AFF', '#E94FB5','#EDBFA5',
+//                    '#E0E572', '#23E280', '#CEF4FF'];
 
 
 
@@ -247,13 +261,16 @@ function handleMouseOut(d, i) {
     update_histograms(data);
 }
 
+var files = ["data/geo/ct2010s.json", "data/communities/2017_10_15_combined_data.csv",
+             "data/communities_stats/communities_stats4.json", "data/users/2017_11_12_users.csv"];
+console.log(files)
 
 //  LOAD DATA
 d3.queue(3)
-    .defer(d3.json, "data/geo/ct2010s.json")
-    .defer(d3.csv, "data/communities/2017_10_15_combined_data.csv")
-    .defer(d3.json, "data/communities_stats/communities_stats4.json")
-    .defer(d3.csv, "data/users/2017_10_15_users.csv")
+    .defer(d3.json, files[0])
+    .defer(d3.csv, files[1])
+    .defer(d3.json, files[2])
+    .defer(d3.csv, files[3])
     .await(ready);
 
 
@@ -261,25 +278,6 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
     if (error) throw error;
     populate_empty_table(null_ct, ct_tbody);
     populate_empty_table(null_cm, cm_tbody);
-
-
-    scatter = svg.append("g")
-        .attr("class", "points")
-        .selectAll("circle")
-        .data(userpoints)
-        .enter()
-        .append("circle")
-        .attr("class", "point")
-        .attr("r", .7)
-        .attr("pointer-events", "none")
-        .attr("transform", function(d) {
-            return "translate(" + projection([d.lat, d.lon]) + ")";
-        })
-        .style('fill-opacity', .4)
-        .style('fill', function(d) {
-            return comm_colors[d.Community]
-        })
-        .style("visibility", "hidden");
 
     data = csv_data;
     data['part_user_h'] = data['part_user'];
@@ -414,6 +412,26 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x4))
 
+
+    scatter = svg.append("g")
+        .attr("class", "points")
+        .selectAll("circle")
+        .data(userpoints)
+        .enter()
+        .append("circle")
+        .attr("class", "point")
+        .attr("r", 1)
+        .attr("pointer-events", "none")
+        .attr("transform", function(d) {
+            return "translate(" + projection([d.lon, d.lat]) + ")";
+        })
+        .style('fill-opacity', .4)
+        .style('fill', function(d) {
+            return comm_colors[d.Community]
+        })
+        .style("visibility", "hidden");
+
+
 }
 
 
@@ -474,6 +492,10 @@ function update_partition(MODE) {
                 return get_color(d, MODE)
             })
         // console.log(scatter);
+        scatter.style('fill', function(d) {
+            return comm_colors[d.Community]
+        });
+
         scatter.style("visibility", 'visible');
         legend.style("visibility", "hidden");
 
@@ -482,7 +504,8 @@ function update_partition(MODE) {
 
     } else if (MODE === "part_user_h") {
         console.log('!!!!')
-        scatter.style("visibility", "hidden");
+        scatter.style("fill", "white");
+        scatter.style("visibility", "visible");
         legend.style("visibility", "visible")
 
 
@@ -544,15 +567,31 @@ function colorbar(){
         .attr("spreadMethod", "pad");
 
       legend.append("stop").attr("offset", "0%")
-        .attr("stop-color", '#ddf5dd')
+        .attr("stop-color", '#ffe1da')
+        .attr("stop-opacity", 1);
+
+      legend.append("stop").attr("offset", "17%")
+        .attr("stop-color", '#ffa5bc')
+        .attr("stop-opacity", 1);
+
+      legend.append("stop").attr("offset", "33%")
+        .attr("stop-color", '#ff6ec1')
         .attr("stop-opacity", 1);
 
       legend.append("stop").attr("offset", "50%")
-        .attr("stop-color", '#4088a8')
+        .attr("stop-color", '#d748cc')
+        .attr("stop-opacity", 1);
+
+      legend.append("stop").attr("offset", "67%")
+        .attr("stop-color", '#8a32c1')
+        .attr("stop-opacity", 1);
+
+      legend.append("stop").attr("offset", "83%")
+        .attr("stop-color", '#3a248a')
         .attr("stop-opacity", 1);
 
       legend.append("stop").attr("offset", "100%")
-        .attr("stop-color", '#2e2b62')
+        .attr("stop-color", '#050c25')
         .attr("stop-opacity", 1);
 
       key.append("rect")

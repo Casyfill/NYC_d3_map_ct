@@ -14,12 +14,11 @@ var null_ct = [],
  'Users', 'Out Connections', 
  'In Connections', 'Internal Connections'].forEach(function(d){null_cm.push({'key':d, 'value':'NA'})});
 
-['Community N', 'Tracts', 'Population', 'Users', 
- 'Susceptibility_hidden',  'Susceptibility_mentioning', 
- 'NetworkDensity_hidden', 'NetworkDensity_mentioning',
- 'SpatialDiversity', 'SpatialDiversityIndividual',
- 'NodeDiversity_hidden', 'NodeDiversity_mentioning'].forEach(function(d){null_cm_users.push({'key':d, 'value':'NA'})});
-console.log('user_comm', null_cm_users);
+['Community N', 'Tracts', 'Population', 'Users',
+ 'Susceptibility, hidden', 'Susceptibility, predicted',
+ "Network Closedness", "Spatial Diversity", "Network Density",
+"Hashtag Entropy", "Language Entropy"].forEach(function(d){null_cm_users.push({'key':d, 'value':'NA'})});
+// console.log('user_comm', null_cm_users);
 
 function replacer(value){
   if (isNaN(value)){return 'NA'} else {return fv(value)}
@@ -52,7 +51,19 @@ function populate_ct_table(d,i, mode){
 function populate_cm_table(d,i, mode){
     
 
-    if(mode != 'part_user' && mode != 'part_user_h'){
+    if(mode == 'part_user'){
+      var new_data = [{'key':'Community N', 'value':d.key},
+                      {'key':'Tracts', 'value':d.value.tracts},
+                      {'key':'Population', 'value':f(d.value.population)},
+                      {'key':"Users", 'value':f(d.value.communityUsers)},
+                      {'key':"Susceptibility, hidden", 'value':ff(d.value.Susceptibility)},
+                      {'key':"Susceptibility, predicted", 'value':ff(d.value.SusceptibilityPred)},
+                      {'key':"Network Closedness", "value": ff(d.value.NetworkClosedness)}, 
+                      {'key':"Spatial Diversity", "value": ff(d.value.SpatialDiversity)}, 
+                      {'key':"Network Density", "value": ff(d.value.NetworkDensity)},
+                      {'key':"Hashtag Entropy", "value": ff(d.value.HashtagEntropy)},
+                      {'key':"Language Entropy", "value": ff(d.value.LanguageEntropy)}];                      
+    } else{
       var new_data = [{'key':'Community N', 'value':d.key},
                       {'key':'Tracts', 'value':d.value.tracts},
                       {'key':'Population', 'value':f(d.value.population)},
@@ -60,19 +71,6 @@ function populate_cm_table(d,i, mode){
                       {'key':"Out Connections", 'value':f(d.value.communityOutConnections)},
                       {'key':"In Connections", 'value':f(d.value.communityInConnections)},
                       {'key':"Internal Connections", 'value':ff(d.value.communityInternalConnections)}];
-    } else{
-      var new_data = [{'key':'Community N', 'value':d.key},
-                      {'key':'Tracts', 'value':d.value.tracts},
-                      {'key':'Population', 'value':f(d.value.population)},
-                      {'key':"Users", 'value':f(d.value.communityUsers)},
-                      {'key':"Susceptibility_hidden", 'value':f(d.value.OpinionChange)},
-                      {'key':"Susceptibility_mentioning", 'value':f(d.value.MenOpinionChange)},
-                      {'key':"NetworkDensity_hidden", 'value':ff(d.value.HNetDensity)},
-                      {'key':"NetworkDensity_mentioning", 'value':ffff(d.value.MNetDensity)},
-                      {'key':"SpatialDiversity", 'value':ff(d.value.SpatialDiversity)},
-                      {'key':"SpatialDiversityIndividual", 'value':ff(d.value.SpatialDiversityIndividual)},
-                      {'key':"NodeDiversity_hidden", 'value':ffff(d.value.HNodeLSTD)},
-                      {'key':"NodeDiversity_mentioning", 'value':ffff(d.value.MNodeLSTD)}];
     }
 
     // create a row for each object in the data

@@ -9,11 +9,9 @@ var formatPercent = d3.format(".0%");
 
 //  MAP
 var projection = d3.geoMercator()
-    .center([-73.98, 40.72])
-    .scale(width * 74)
+    .center([-74.00, 40.72])
+    .scale(Math.min(height * 90, width*74))
     .translate([(width) / 2, (height) / 2]);
-
-console.log(projection([-73.98, 40.72]));
 
 var path = d3.geoPath()
     .projection(projection);
@@ -26,52 +24,40 @@ var scatter;
 var dd = d3.select('#myDropdown');
 var dv = d3.select('#vizMode');
 
-// var gradient = d3.scaleQuantize().domain([6, 11]).range(['#ffe1da',
-//                                                          '#ffa5bc',  
-//                                                          '#ff6ec1',
-//                                                          '#d748cc',  
-//                                                          '#8a32c1',
-//                                                          '#3a248a', 
-//                                                          '#050c25',]);
-
-var gradient = d3.scaleQuantize().domain([6, 11]).range(['#fc7c3c',
-                                                         '#f7e99d',  
-                                                         '#b2db6b']);
+var gradient = d3.scaleQuantile().domain([0, 1]).range(['#b2db6b',
+                                                        '#f7e99d',  
+                                                        '#fc7c3c']);
 
 
 var legend = colorbar();
-// svg.append('text')
-//    .attr("id", "histtitle")
-//    .text("Household Income, Normalized")
-//    .attr("transform", 'translate(4,4)');
 
-var hist_height = Math.round(.24 * (d3.select('#stats').node().getBoundingClientRect()['height'] - 146 - 4 * 42));
-var hist_width = d3.select('#comm_stats').node().getBoundingClientRect()['width'];
-console.log(d3.select('#stats').node().getBoundingClientRect()['height'], hist_height);
+var hist_height = ((document.getElementById('infocolumn').clientHeight - 60)*.52 - 5 - 24)/4 - 5 - 18 - 10;
+var hist_width = d3.select('#plots_container').node().getBoundingClientRect()['width'];
+console.log('hist heights', hist_height );
 
 var hist1 = d3.select("#income_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", hist_height + "px")
+    .attr("height", hist_height + 'px')
 
 var hist2 = d3.select("#owners_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", hist_height + "px")
+    .attr("height", hist_height + 'px')
 
 var hist3 = d3.select("#commute_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", hist_height + "px")
+    .attr("height", hist_height + 'px')
 
 var hist4 = d3.select("#age_container")
     .append("svg")
     .attr("class", "hist")
     .attr("width", "100%")
-    .attr("height", hist_height + "px")
+    .attr("height", hist_height + 'px')
 
 var y = d3.scaleLinear()
     .domain([0, .3])
@@ -182,27 +168,12 @@ var MODE = 'part_all_';
 var vMODE = 'partition';
 var comm_stats, all_comm_stats, data;
 
-//  Community colors
-// var comm_colors = ["red", "blue", "green", "yellow", "purple",
-//     "orange", "teal", "pink", "steelblue", 'magenta',
-//     "black", "grey", "darkgreen", "darkred", "darkblue",
-//     "lime", "beige", 'burlywood', "darkseagreen", 'darkslategray', 'forestgreen', 'khaki', 'lightsalmon',
-//     'mediumturquoise', 'olivedrab', 'plum', 'salmon', 'sandybrown'
-// ];
-
 
 var comm_colors = ["#d67966", "#7bb3ce", "#56ce6c", "b2ef6e", "#85c43c",
     "#e8b245", "#7fefc4", "#fcbaea", "#539ca5", '#8154a5',
     "black", '#0A8FCC', '#00AEFF', '#3DE8DF', '#732AFF', '#E94FB5','#EDBFA5',
                    '#E0E572', '#23E280', '#CEF4FF'
 ];
-
-// var comm_colors = ['#022864', '#01679E', '#0A8FCC', '#00AEFF', 
-//                    '#3DE8DF', '#732AFF', '#E94FB5','#EDBFA5',
-//                    '#E0E572', '#23E280', '#CEF4FF'];
-
-
-
 
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
@@ -238,18 +209,14 @@ var cm_tbody = cm_table.append('tbody');
 function handleMouseOver(d, i) {
     // Add interactivity
     // console.log(MODE, 'Tract:', d.properties);
-    if (MODE == 'part_user_h'){
-        var lmode = 'part_user'
-    } else {var lmode = MODE};
+    
 
-
-    if (!isNaN(d.properties[lmode])) {
-        decolorize_other_communities(d, i, lmode);
-        populate_ct_table(d, i, );
-        populate_cm_table(get_community_datas(d.properties[lmode], all_comm_stats[lmode]),i, lmode);
-        // console.log(d.properties[lmode]);
+    if (!isNaN(d.properties[MODE])) {
+        decolorize_other_communities(d, i, MODE);
+        populate_ct_table(d, i, MODE);
+        populate_cm_table(get_community_datas(d.properties[MODE], all_comm_stats[MODE]),i, MODE);
         update_histograms(data.filter(function(dd) {
-            return dd[lmode] == d.properties[lmode]
+            return dd[MODE] == d.properties[MODE]
         }))
     }
 }
@@ -269,7 +236,7 @@ function handleMouseOut(d, i) {
 }
 
 var files = ["data/geo/ct2010s.json", "data/communities/2017_10_15_combined_data.csv",
-             "data/communities_stats/communities_stats4.json", "data/users/2017_11_12_users.csv"];
+             "data/communities_stats/communities_stats5.json", "data/users/2017_11_12_users.csv"];
 console.log(files)
 
 //  LOAD DATA
@@ -460,7 +427,7 @@ function MapSizeChange() {
     // update projection
     projection
         .translate([width / 2, height / 2])
-        .scale(width * 78);
+        .scale(Math.min(height * 90, width*74));
 
     // resize the map
     cts.selectAll(".tract").attr('d', path);
@@ -525,7 +492,7 @@ function updateViz(MODE, vMODE){
             .style('fill', function(d) {
                 if (!isNaN(d.properties[MODE])) {
                 var community = get_community_datas(d.properties['part_user'], all_comm_stats['part_user']);
-                return gradient(community["value"]['OpinionChange']);
+                return gradient(community["value"]["Susceptibility"]);
                 } else {return t.url();}
             })
 
@@ -541,7 +508,7 @@ function updateViz(MODE, vMODE){
             .style('fill', function(d) {
                 if (!isNaN(d.properties[MODE])) {
                 var community = get_community_datas(d.properties['part_user'], all_comm_stats['part_user']);
-                return gradient(community["value"]['MenOpinionChange']);
+                return gradient(community["value"]["SusceptibilityPred"]);
                 } else {return t.url();}
             })
     } else if(vMODE){
@@ -557,7 +524,7 @@ function update_partition(MODE) {
         if(vMODE == 'partition'){
             dv.select("button").attr('disabled', null);
             vMODE = 'points';
-            dv.select("button").text('Points');
+            dv.select("button").text('Subcommunity');
         }
 
         updateViz(MODE, vMODE)
@@ -627,21 +594,10 @@ function colorbar(){
          .attr("height", 300)
          .style("fill", "url(#gradient)")
 
-      var y = d3.scaleLinear().range([0, 300]).domain([11, 6]);
+      var y = d3.scaleLinear().range([0, 300]).domain([1, 0]);
       var yAxis = d3.axisRight(y)
-                    .tickValues([6, 
-                                 (6 + 11)/2,
-                                 11])
+                    .tickValues([0, 0.5, 1,0])
                     .tickFormat(ff);
-
-      key.append("g")
-         .attr("class", "y axis")
-         .call(yAxis)
-         .attr("transform", "translate(15, 0)")
-         .append("text")
-         .attr("dy", ".62em")
-         .style("text-anchor", "start")
-         .text('Susceptibility_hidden');
 
       key.style("visibility", "hidden");
       return key;

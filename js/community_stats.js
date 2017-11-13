@@ -15,7 +15,7 @@ function get_community_stats(csv_data, comm_column){
 function get_all_community_stats(csv_data, comm_properties){
 	var all_comm_stats = {}; //= comm_properties;
 
-	comm_columns = ['part_all_','part_hidden_','part_recipr_', 'part_user', 'part_user_h'];
+	comm_columns = ['part_all_','part_hidden_','part_recipr_', 'part_user'];
 	comm_columns.forEach(function(comm_column, i){
 		
 		var data = d3.nest()
@@ -32,15 +32,15 @@ function get_all_community_stats(csv_data, comm_properties){
 		  	var result = comm_properties[comm_column].filter(function(dd) {
         		return dd.key == d.key;});
 
-		  	// d.value = Object.assign(d.value, result[0])
-		  	cols = ["communityUsers","communityOutConnections",
-            		"communityInConnections", "communityInternalConnections"];
+		  	cols = ["communityUsers"];
 
             if(comm_column == 'part_user'){
-            	cols = cols.concat(["OpinionChange", "MenOpinionChange", 
-            		"HNetDensity", "MNetDensity", "SpatialDiversity", "SpatialDiversityIndividual",
-            		"HNodeLSTD", "MNodeLSTD"]);
-            } 
+            	cols = cols.concat(["Susceptibility", "SusceptibilityPred", "NetworkClosedness", 
+                                    "SpatialDiversity", "NetworkDensity",
+                                    "HashtagEntropy","LanguageEntropy"]);
+            } else {
+            	cols = cols.concat(["communityOutConnections", "communityInConnections", "communityInternalConnections"]);
+            }
             for (var i = 0; i < cols.length; i++){
             		col = cols[i];
     				d.value[col] = (result[0] !== undefined) ? result[0][col] : null;

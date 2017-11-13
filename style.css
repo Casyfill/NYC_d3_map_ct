@@ -13,16 +13,15 @@ svg.map {
 path.back {
   stroke: lightgray;
   stroke-width: 1px;
-  /*fill: rgb(237, 255, 248);  //rgb(237, 255, 248);*/
 
 }
 
-.boro {
+/*.boro {
   stroke: lightgray;
   fill-opacity:0;
   stroke-width: 2px;
 }
-
+*/
 
 .tract {
   stroke: lightgrey;
@@ -44,11 +43,6 @@ path.back {
   fill-opacity:0.5;
 }
 
-
-.park {
-  stroke-width: 0px;
-  fill: rgb(173, 216, 138);
-}
 
 p#histtitle {
   font: 700 7px Lato;
@@ -105,9 +99,18 @@ text {
   height:100vh;
   background-color:lightgrey;
   position:relative;
-
 }
 
+/* Large desktop */
+@media (min-width: 1200px) { 
+#infocolumn {width:450px !important;}
+
+.col-sm-8 {
+  width: calc(100% - 450px) !important;
+}
+
+
+ }
 
 div.chart-wrapper {
   border-width: 0px;
@@ -116,6 +119,9 @@ div.chart-wrapper {
   border-color: black;
 }
 
+div#infocard{
+  border-width: 0px;
+}
 
 div.chart-title{
   margin-top: 10px;
@@ -134,31 +140,12 @@ div #modeselector {
 
 #stats {
   padding-top:5px;
-  height:67vh;
 }
 
  
 #infocard {
   margin-top:5px;
-  height:115px;
   width:100%;
-
-}
-
-#download_section {
-  
-  height: 5vh;
-  max-height: 50px;
-  width:100%;
-  border-bottom: 0px !important;
-  /*position:absolute; */
-  /*bottom:0;*/
-}
-
-#download {
-  padding-top:5px;
-  height:5vh;
-  left: 50%;
 
 }
 
@@ -169,21 +156,29 @@ div #modeselector {
 }
 
 
-p.tooltip {
+/*p.tooltip {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    /*pointer-events: none;*/
-}
-
+    pointer-events: none;
+}*/
+/*
 td, th {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10px;
+}*/
+
+
+table.fixed {
+    width: 100%;
+    table-layout: fixed;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 12px;
 }
 
+
 table.fixed {table-layout:fixed; width:100%; margin-top:5px}/*Setting the table width is important!*/
 table.fixed td {overflow:hidden;}/*Hide text outside the cell.*/
-table.fixed td:nth-of-type(1) {width:150px;}/*Setting the width of column 1.*/
-table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}/*Setting the width of column 2.*/
-
+table.fixed:nth-of-type(1) {text-overflow: ellipsis; white-space: nowrap;overflow: hidden; }
+table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}
 
 
 .flex {

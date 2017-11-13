@@ -73,10 +73,6 @@
               <li><a href='#' value="part_recipr_">Reciprocal links, aggr.</a></li>
               <li><a href='#' value="part_hidden_">Hidden links, aggr.</a></li>
               <li><a href='#' value="part_user">Hidden links, ind.</a></li>
-              <!-- <li><a href='#' value="part_user_h">User-based [heatmap]</a></li>
-              <li class="divider"></li>
-              <li><a href='#' value="part_user_h">susceptibility, hidden [heatmap]</a></li>
-              <li><a href='#' value="part_user_h">susceptibility. predicted [heatmap]</a></li> -->
             </ul>
           </span>
           <span id="vizMode" class="dropdown float-left">
@@ -95,35 +91,39 @@
          
         </div>
 
-        <div class="chart-wrapper" id="comm_stats">
+        <div class="chart-wrapper" id="comm_stats" style="height: 27%;">
           <div class="chart-title">
            Community Statistics
           </div>
-            <div class="chart-stage" id='stats'>
+            <div class="chart-stage" id='cmstats'>
               <div id="stats_container"></div>
-              <div id="plots_container" style="padding-top: 5px; ">
-                  <div id="income_container" style="padding-top: 5px; ">
+            </div>
+         </div>
+         <div class="chart-wrapper" id="stats" style="height: 52%;" >
+          <div class="chart-title">
+           Properties Distribution
+          </div>
+
+          <div id="plots_container" style="padding-top: 5px;">
+                  <div id="income_container" style="padding-top: 5px; height: 22%;">
                    <p id="histtitle" > Median Income by Tract</p>
-                  </div>
+          </div>
                 
-                  <div id="owners_container" style="padding-top: 5px">
+                  <div id="owners_container" style="padding-top: 5px; height: 22%;">
                    <p id="histtitle" > Owner-occupied households, %</p>
                   </div>
                 
-                  <div id="commute_container" style="padding-top: 5px;">
+                  <div id="commute_container" style="padding-top: 5px; height: 22%;">
                    <p id="histtitle" > Average Commute, Min.</p>
                   </div>
 
-                  <div id="age_container" style="padding-top: 5px;">
+                  <div id="age_container" style="padding-top: 5px; height: 22%;">
                    <p id="histtitle" > Average Population Age, Years</p>
                   </div>
 
               </div>
 
             </div>
-
-          
-        </div>
         
         <div class="chart-wrapper" id="infocard">
           <div class="chart-title">

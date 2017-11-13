@@ -321,6 +321,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .style("fill", t.url());
 
     hist1.append("g")
+        .attr("class", "axis")
         .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x1))
 
@@ -341,6 +342,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .style("fill", t.url());
 
     hist2.append("g")
+        .attr("class", "axis")
         .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x2)
             .tickFormat(formatPercent));
@@ -362,6 +364,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .style("fill", t.url());
 
     hist3.append("g")
+        .attr("class", "axis")
         .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x3))
 
@@ -383,6 +386,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .style("fill", t.url());
 
     hist4.append("g")
+        .attr("class", "axis")
         .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x4))
 
@@ -434,6 +438,20 @@ function MapSizeChange() {
     scatter.attr("transform", function(d) {
         return "translate(" + projection([d.lat, d.lon]) + ")";
     })
+
+    hist_height = ((document.getElementById('infocolumn').clientHeight - 60)*.52 - 5 - 24)/4 - 5 - 18 - 10;
+
+    var ar = [hist1, hist2, hist3, hist4];
+
+    for (i = 0; i < ar.length; i++) { 
+        ar[i].attr("height", hist_height + 'px');
+        ar[i].select(".axis")
+             .transition()
+             .attr("transform", "translate(0," + (hist_height - 17) + ")");
+    }
+    
+    update_histograms(data);
+
 
 }
 

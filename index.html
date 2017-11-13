@@ -29,7 +29,7 @@
           <span class="icon-bar"></span>
         </button>
 
-        <a class="navbar-brand" href="./">NYC tracts v2.0.1</a>
+        <a class="navbar-brand" href="./">NYC tracts v2.0.6</a>
       </div>
 
 
@@ -69,19 +69,29 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dLabel">
-              <li><a href='#' value="part_all_">All mentions</a></li>
-              <li><a href='#' value="part_recipr_">Reciprocal mentions</a></li>
-              <li><a href='#' value="part_hidden_">Hidden links</a></li>
-              <li class="divider"></li>
-              <li><a href='#' value="part_user">User-based [pointmap]</a></li>
-              <li><a href='#' value="part_user_h">User-based [heatmap]</a></li>
+              <li><a href='#' value="part_all_">All mentions, aggr.</a></li>
+              <li><a href='#' value="part_recipr_">Reciprocal links, aggr.</a></li>
+              <li><a href='#' value="part_hidden_">Hidden links, aggr.</a></li>
+              <li><a href='#' value="part_user">Hidden links, ind.</a></li>
+              <!-- <li><a href='#' value="part_user_h">User-based [heatmap]</a></li>
               <li class="divider"></li>
               <li><a href='#' value="part_user_h">susceptibility, hidden [heatmap]</a></li>
-              <li><a href='#' value="part_user_h">susceptibility. predicted [heatmap]</a></li>
+              <li><a href='#' value="part_user_h">susceptibility. predicted [heatmap]</a></li> -->
+            </ul>
+          </span>
+          <span id="vizMode" class="dropdown float-left">
+            <button class="btn btn-primary btn-sm dropdown-toggle float-left" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" disabled>Disabled
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dLabel">
+              <li><a href='#' value="points">Subcommunity</a></li>
+              <li><a href='#' value="heat1">SNODA Suscept.</a></li>
+              <li><a href='#' value="heat2">Predicted Suscept.</a></li>
             </ul>
           </span>
 
-          <button type="button" id="download_btn" class="btn btn-sm btn-primary btn-disabled">Download</button>
+          <button type="button" id="download_btn" class="btn btn-sm btn-primary btn-disabled">
+           <span class="glyphicon glyphicon-download"></span> Download</button>
          
         </div>
 

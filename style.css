@@ -195,13 +195,6 @@ table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}/*Setting th
   align-content:stretch;
 }
 
-.btn-primary{
-  color: #ddd;
-  background-color: #232323;
-  border-color: #4a4e51;
-};
-
-
 .btn-primary {
   color: #ddd;
   background-color: #232323;
@@ -211,4 +204,12 @@ table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}/*Setting th
   color: #ffffff;
   background-color: #4a4e51;
   border-color: #5b5b5b;
+}
+
+.btn-primary.disabled, 
+.btn-primary[disabled],
+fieldset[disabled] {
+  color: #ffffff;
+  background-color: #72787c;
+  border-color: #4a4e51;
 }

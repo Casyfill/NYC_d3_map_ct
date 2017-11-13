@@ -23,12 +23,22 @@ var svg = d3.select("#svg-container")
     .attr("class", "map");
 
 var scatter;
-var dd = d3.select('#myDropdown')
+var dd = d3.select('#myDropdown');
+var dv = d3.select('#vizMode');
 
-var gradient = d3.scaleLinear().domain([6, 7, 9, 11]).range(['#050c25', '#3a248a',
-                                                             '#8a32c1', '#d748cc', 
-                                                             '#ff6ec1', '#ffa5bc', 
-                                                             '#ffe1da']);
+// var gradient = d3.scaleQuantize().domain([6, 11]).range(['#ffe1da',
+//                                                          '#ffa5bc',  
+//                                                          '#ff6ec1',
+//                                                          '#d748cc',  
+//                                                          '#8a32c1',
+//                                                          '#3a248a', 
+//                                                          '#050c25',]);
+
+var gradient = d3.scaleQuantize().domain([6, 11]).range(['#fc7c3c',
+                                                         '#f7e99d',  
+                                                         '#b2db6b']);
+
+
 var legend = colorbar();
 // svg.append('text')
 //    .attr("id", "histtitle")
@@ -169,9 +179,8 @@ var t = textures.lines()
 svg.call(t);
 
 var MODE = 'part_all_';
-var comm_stats;
-var all_comm_stats;
-var data;
+var vMODE = 'partition';
+var comm_stats, all_comm_stats, data;
 
 //  Community colors
 // var comm_colors = ["red", "blue", "green", "yellow", "purple",
@@ -197,14 +206,12 @@ var comm_colors = ["#d67966", "#7bb3ce", "#56ce6c", "b2ef6e", "#85c43c",
 
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
-
     if (!isNaN(d.properties[mode])) {
         return comm_colors[d.properties[mode]];
     } else {
         return t.url()
     }
 }
-
 
 
 
@@ -275,7 +282,7 @@ d3.queue(3)
 
 
 function ready(error, nyc, csv_data, comm_properties, userpoints) {
-    if (error) throw error;
+    if (error) throw error;  
     populate_empty_table(null_ct, ct_tbody);
     populate_empty_table(null_cm, cm_tbody);
 
@@ -295,7 +302,7 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         e.properties.part_hidden_ = Math.round(parseFloat(csv[e.properties.geoid]['part_hidden_']))
         e.properties.part_recipr_ = Math.round(parseFloat(csv[e.properties.geoid]['part_recipr_']))
         e.properties.part_user = Math.round(parseFloat(csv[e.properties.geoid]['part_user']))
-        e.properties.part_user_h = Math.round(parseFloat(csv[e.properties.geoid]['part_user']))
+        e.properties.part_user_h = e.properties.part_user
         e.properties.population = parseInt(csv[e.properties.geoid].population)
         e.properties.income = parseInt(csv[e.properties.geoid].median_income)
         e.properties.own_occupied = parseFloat(csv[e.properties.geoid].owner_occupied_housing_units)
@@ -480,49 +487,10 @@ function colorize_back(d, i) {
 }
 
 
+function updateViz(MODE, vMODE){
+    console.log("vMODE:", vMODE);
 
-function update_partition(MODE) {
-    console.log('updation partition')
-    if (MODE === "part_user") {
-
-
-        cts.selectAll(".tract")
-            .style('fill-opacity', 0.5)
-            .style('fill', function(d) {
-                return get_color(d, MODE)
-            })
-        // console.log(scatter);
-        scatter.style('fill', function(d) {
-            return comm_colors[d.Community]
-        });
-
-        scatter.style("visibility", 'visible');
-        legend.style("visibility", "hidden");
-
-        console.log('change table!');
-        empty_table(null_cm_users, cm_tbody);
-
-    } else if (MODE === "part_user_h") {
-        console.log('!!!!')
-        scatter.style("fill", "white");
-        scatter.style("visibility", "visible");
-        legend.style("visibility", "visible")
-
-
-        cts.selectAll(".tract")
-            .style('fill-opacity', 1)
-            .style('fill', function(d) {
-                if (!isNaN(d.properties[MODE])) {
-                // console.log(all_comm_stats);
-                var community = get_community_datas(d.properties['part_user'], all_comm_stats['part_user']);
-                return gradient(community["value"]['OpinionChange']);
-                } else {return t.url();}
-            })
-
-        empty_table(null_cm_users, cm_tbody);
-
-    }else {
-
+    if (vMODE == 'partition'){
         scatter.style("visibility", "hidden");
         legend.style("visibility", "hidden");
 
@@ -531,18 +499,94 @@ function update_partition(MODE) {
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
+    }
+    else if(vMODE == 'points'){
+        cts.selectAll(".tract")
+            .style('fill-opacity', 0.5)
+            .style('fill', function(d) {
+                return get_color(d, MODE)
+            })
+        // console.log(scatter);
+        scatter.style('fill', function(d) {
+            return comm_colors[d.Community]
+        }).style('fill-opacity', .4);;
 
+        scatter.style("visibility", 'visible');
+        legend.style("visibility", "hidden");
+
+    } else if(vMODE == 'heat1'){
+
+        scatter.style("fill", "white").style('fill-opacity', .2);
+        scatter.style("visibility", "visible");
+        legend.style("visibility", "visible")
+
+        cts.selectAll(".tract")
+            .style('fill-opacity', 1)
+            .style('fill', function(d) {
+                if (!isNaN(d.properties[MODE])) {
+                var community = get_community_datas(d.properties['part_user'], all_comm_stats['part_user']);
+                return gradient(community["value"]['OpinionChange']);
+                } else {return t.url();}
+            })
+
+
+    } else if(vMODE == 'heat2'){
+
+        scatter.style("fill", "white").style('fill-opacity', .2);
+        scatter.style("visibility", "visible");
+        legend.style("visibility", "visible")
+
+        cts.selectAll(".tract")
+            .style('fill-opacity', 1)
+            .style('fill', function(d) {
+                if (!isNaN(d.properties[MODE])) {
+                var community = get_community_datas(d.properties['part_user'], all_comm_stats['part_user']);
+                return gradient(community["value"]['MenOpinionChange']);
+                } else {return t.url();}
+            })
+    } else if(vMODE){
+        console.log('Not implemented !')
+    }
+}
+
+
+
+function update_partition(MODE) {
+    console.log(MODE, vMODE);
+    if (MODE === "part_user") {
+        if(vMODE == 'partition'){
+            dv.select("button").attr('disabled', null);
+            vMODE = 'points';
+            dv.select("button").text('Points');
+        }
+
+        updateViz(MODE, vMODE)
+        empty_table(null_cm_users, cm_tbody);
+
+    } else {
+        dv.select("button").attr('disabled', '');
+        dv.select("button").text('Disabled');
+        vMODE = 'partition';
+        updateViz(MODE, vMODE)
         empty_table(null_cm, cm_tbody);
     }
 }
 
 
-$('.dropdown-menu a').click(function(d) {
+$('#myDropdown > .dropdown-menu a').click(function(d) {
         g = this;
         dd.select("button").text(g.text) // switch header
         
         MODE = g.getAttribute("value");
-        console.log(MODE);
+        update_partition(MODE);
+
+    });
+
+$('#vizMode > .dropdown-menu a').click(function(d) {
+        g = this;
+        dv.select("button").text(g.text) // switch header
+        vMODE = g.getAttribute("value");
+        console.log('now vMode is', g.getAttribute("value"));
         update_partition(MODE);
 
     });
@@ -558,7 +602,7 @@ function colorbar(){
       var key = svg.append('g')
                    .attr("id", "legend")
                    .attr("width", 120).attr("height", 300)
-                   .attr("transform", "translate(12,150)");
+                   .attr("transform", "translate(12,100)");
 
       var legend = key.append("defs").append("svg:linearGradient")
         .attr("id", "gradient")
@@ -567,31 +611,15 @@ function colorbar(){
         .attr("spreadMethod", "pad");
 
       legend.append("stop").attr("offset", "0%")
-        .attr("stop-color", '#ffe1da')
-        .attr("stop-opacity", 1);
-
-      legend.append("stop").attr("offset", "17%")
-        .attr("stop-color", '#ffa5bc')
-        .attr("stop-opacity", 1);
-
-      legend.append("stop").attr("offset", "33%")
-        .attr("stop-color", '#ff6ec1')
+        .attr("stop-color", '#b2db6b')
         .attr("stop-opacity", 1);
 
       legend.append("stop").attr("offset", "50%")
-        .attr("stop-color", '#d748cc')
-        .attr("stop-opacity", 1);
-
-      legend.append("stop").attr("offset", "67%")
-        .attr("stop-color", '#8a32c1')
-        .attr("stop-opacity", 1);
-
-      legend.append("stop").attr("offset", "83%")
-        .attr("stop-color", '#3a248a')
+        .attr("stop-color", '#f7e99d')
         .attr("stop-opacity", 1);
 
       legend.append("stop").attr("offset", "100%")
-        .attr("stop-color", '#050c25')
+        .attr("stop-color", '#fc7c3c')
         .attr("stop-opacity", 1);
 
       key.append("rect")

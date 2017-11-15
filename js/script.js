@@ -20,7 +20,7 @@ var svg = d3.select("#svg-container")
     .append("svg")
     .attr("class", "map");
 
-var scatter;
+// var scatter;
 var dd = d3.select('#myDropdown');
 var dv = d3.select('#vizMode');
 
@@ -35,7 +35,7 @@ var legend = colorbar();
 
 var hist_height = ((document.getElementById('infocolumn').clientHeight - 60)*.52 - 5 - 24)/4 - 5 - 18 - 10;
 var hist_width = d3.select('#plots_container').node().getBoundingClientRect()['width'];
-console.log('hist heights', hist_height );
+// console.log('hist heights', hist_height );
 
 var hist1 = d3.select("#income_container")
     .append("svg")
@@ -244,18 +244,17 @@ function handleMouseOut(d, i) {
 }
 
 var files = ["data/geo/ct2010s.json", "data/communities/2017_10_15_combined_data.csv",
-             "data/communities_stats/communities_stats5.json", "data/users/2017_11_12_users.csv"];
+             "data/communities_stats/communities_stats5.json"];
 
 //  LOAD DATA
 d3.queue(4)
     .defer(d3.json, files[0])
     .defer(d3.csv, files[1])
     .defer(d3.json, files[2])
-    .defer(d3.csv, files[3])
     .await(ready);
 
 
-function ready(error, nyc, csv_data, comm_properties, userpoints) {
+function ready(error, nyc, csv_data, comm_properties) {
     if (error) throw error;
     populate_empty_table(null_ct, ct_tbody);
     populate_empty_table(null_cm, cm_tbody);
@@ -397,25 +396,6 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x4))
 
-    scatter = svg.append("g")
-        .attr("class", "points")
-        .selectAll("circle")
-        .data(userpoints)
-        .enter()
-        .append("circle")
-        .attr("class", "point")
-        .attr("r", 1)
-        .attr("pointer-events", "none")
-        .attr("transform", function(d) {
-            return "translate(" + projection([d.lon, d.lat]) + ")";
-        })
-        .style('fill-opacity', .4)
-        .style('fill', function(d) {
-            return comm_colors[d.Community]
-        })
-        .style("visibility", "hidden");
-
-
 }
 
 
@@ -440,9 +420,6 @@ function MapSizeChange() {
 
     // resize the map
     cts.selectAll(".tract").attr('d', path);
-    scatter.attr("transform", function(d) {
-        return "translate(" + projection([d.lat, d.lon]) + ")";
-    })
 
     hist_height = ((document.getElementById('infocolumn').clientHeight - 60)*.52 - 5 - 24)/4 - 5 - 18 - 10;
 
@@ -477,7 +454,7 @@ function updateViz(MODE, vMODE){
     console.log("vMODE:", vMODE);
 
     if (vMODE == 'partition'){
-        scatter.style("visibility", "hidden");
+        // scatter.style("visibility", "hidden");
         legend.style("visibility", "hidden");
 
         cts.selectAll(".tract")
@@ -488,22 +465,22 @@ function updateViz(MODE, vMODE){
     }
     else if(vMODE == 'points'){
         cts.selectAll(".tract")
-            .style('fill-opacity', 0.8)
+            .style('fill-opacity', 1.0)
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
         // console.log(scatter);
-        scatter.style('fill', function(d) {
-            return comm_colors[d.Community]
-        }).style('fill-opacity', .4);;
+        // scatter.style('fill', function(d) {
+        //     return comm_colors[d.Community]
+        // }).style('fill-opacity', .4);;
 
-        scatter.style("visibility", 'visible');
+        // scatter.style("visibility", 'visible');
         legend.style("visibility", "hidden");
 
     } else if(vMODE == 'heat1'){
 
-        scatter.style("fill", "white").style('fill-opacity', .2);
-        scatter.style("visibility", "visible");
+        // scatter.style("fill", "white").style('fill-opacity', .2);
+        // scatter.style("visibility", "visible");
         legend.style("visibility", "visible")
 
         cts.selectAll(".tract")
@@ -518,8 +495,8 @@ function updateViz(MODE, vMODE){
 
     } else if(vMODE == 'heat2'){
 
-        scatter.style("fill", "white").style('fill-opacity', .2);
-        scatter.style("visibility", "visible");
+        // scatter.style("fill", "white").style('fill-opacity', .2);
+        // scatter.style("visibility", "visible");
         legend.style("visibility", "visible")
 
         cts.selectAll(".tract")

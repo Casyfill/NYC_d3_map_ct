@@ -31,10 +31,10 @@ path.back {
 
 
 .tract:hover {
-  stroke: black;
+  stroke: white;
   fill-opacity:1 !important;
   stroke-width: 2px;
-  
+
 }
 
 
@@ -102,7 +102,7 @@ text {
 }
 
 /* Large desktop */
-@media (min-width: 1200px) { 
+@media (min-width: 1200px) {
 #infocolumn {width:450px !important;}
 
 .col-sm-8 {
@@ -142,7 +142,7 @@ div #modeselector {
   padding-top:5px;
 }
 
- 
+
 #infocard {
   margin-top:5px;
   width:100%;
@@ -201,7 +201,7 @@ table.fixed td:nth-of-type(2) {text-align:right; font-weight: bold;}
   border-color: #5b5b5b;
 }
 
-.btn-primary.disabled, 
+.btn-primary.disabled,
 .btn-primary[disabled],
 fieldset[disabled] {
   color: #ffffff;

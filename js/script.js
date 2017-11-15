@@ -25,7 +25,9 @@ var dd = d3.select('#myDropdown');
 var dv = d3.select('#vizMode');
 
 var gradient = d3.scaleQuantile().domain([0, 1]).range(['#b2db6b',
-                                                        '#f7e99d',  
+                                                        '#cfdb6b',
+                                                        '#f7e99d',
+                                                        '#f6bc64',
                                                         '#fc7c3c']);
 
 
@@ -169,11 +171,17 @@ var vMODE = 'partition';
 var comm_stats, all_comm_stats, data;
 
 
-var comm_colors = ["#d67966", "#7bb3ce", "#56ce6c", "b2ef6e", "#85c43c",
-    "#e8b245", "#7fefc4", "#fcbaea", "#539ca5", '#8154a5',
-    "black", '#0A8FCC', '#00AEFF', '#3DE8DF', '#732AFF', '#E94FB5','#EDBFA5',
-                   '#E0E572', '#23E280', '#CEF4FF'
-];
+// var comm_colors2 = ["#d67966", "#7bb3ce", "#56ce6c", "#b2ef6e", "#85c43c",
+//     "#e8b245", "#7fefc4", "#fcbaea", "#539ca5", '#8154a5',
+//     "black", '#0A8FCC', '#00AEFF', '#3DE8DF', '#732AFF', '#E94FB5','#EDBFA5',
+//                    '#E0E572', '#23E280', '#CEF4FF'
+// ];
+
+var comm_colors = ['#022864', "#e8b245", "#85c43c", '#E94FB5',
+            '#01679E', '#00AEFF',
+            '#3DE8DF', '#732AFF', '#EDBFA5',
+            '#E0E572', '#23E280', '#CEF4FF',
+            "#7fefc4", "#539ca5"];
 
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
@@ -209,7 +217,7 @@ var cm_tbody = cm_table.append('tbody');
 function handleMouseOver(d, i) {
     // Add interactivity
     // console.log(MODE, 'Tract:', d.properties);
-    
+
 
     if (!isNaN(d.properties[MODE])) {
         decolorize_other_communities(d, i, MODE);
@@ -230,17 +238,16 @@ function handleMouseOut(d, i) {
     } else {
         empty_table(null_cm, cm_tbody);
     }
-    
+
     colorize_back();
     update_histograms(data);
 }
 
 var files = ["data/geo/ct2010s.json", "data/communities/2017_10_15_combined_data.csv",
              "data/communities_stats/communities_stats5.json", "data/users/2017_11_12_users.csv"];
-console.log(files)
 
 //  LOAD DATA
-d3.queue(3)
+d3.queue(4)
     .defer(d3.json, files[0])
     .defer(d3.csv, files[1])
     .defer(d3.json, files[2])
@@ -249,7 +256,7 @@ d3.queue(3)
 
 
 function ready(error, nyc, csv_data, comm_properties, userpoints) {
-    if (error) throw error;  
+    if (error) throw error;
     populate_empty_table(null_ct, ct_tbody);
     populate_empty_table(null_cm, cm_tbody);
 
@@ -390,7 +397,6 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
         .attr("transform", "translate(0," + (hist_height - 17) + ")")
         .call(d3.axisBottom(x4))
 
-
     scatter = svg.append("g")
         .attr("class", "points")
         .selectAll("circle")
@@ -411,7 +417,6 @@ function ready(error, nyc, csv_data, comm_properties, userpoints) {
 
 
 }
-
 
 
 
@@ -443,32 +448,28 @@ function MapSizeChange() {
 
     var ar = [hist1, hist2, hist3, hist4];
 
-    for (i = 0; i < ar.length; i++) { 
+    for (i = 0; i < ar.length; i++) {
         ar[i].attr("height", hist_height + 'px');
         ar[i].select(".axis")
              .transition()
              .attr("transform", "translate(0," + (hist_height - 17) + ")");
     }
-    
     update_histograms(data);
-
-
 }
 
 
 //  DECOLORIZE OTHER COMMUNITIES
 function decolorize_other_communities(d, i) {
-
     cts.selectAll(".tract")
         .filter(function(dd) {
             return dd.properties[MODE] != d.properties[MODE];
         }) // <== This line
-        .style('opacity', .2);
+        .style('opacity', .8);
 }
 
 function colorize_back(d, i) {
     cts.selectAll(".tract")
-        .style('opacity', .9);
+        .style('opacity', 1);
 }
 
 
@@ -480,14 +481,14 @@ function updateViz(MODE, vMODE){
         legend.style("visibility", "hidden");
 
         cts.selectAll(".tract")
-            .style('fill-opacity', .9)
+            .style('fill-opacity', 1.)
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
     }
     else if(vMODE == 'points'){
         cts.selectAll(".tract")
-            .style('fill-opacity', 0.5)
+            .style('fill-opacity', 0.8)
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
@@ -561,7 +562,7 @@ function update_partition(MODE) {
 $('#myDropdown > .dropdown-menu a').click(function(d) {
         g = this;
         dd.select("button").text(g.text) // switch header
-        
+
         MODE = g.getAttribute("value");
         update_partition(MODE);
 
@@ -616,6 +617,11 @@ function colorbar(){
       var yAxis = d3.axisRight(y)
                     .tickValues([0, 0.5, 1,0])
                     .tickFormat(ff);
+
+      key.append("g")
+         .attr("class", "y axis")
+         .call(yAxis)
+         .attr("transform", "translate(15, 0)");
 
       key.style("visibility", "hidden");
       return key;

@@ -8,7 +8,9 @@ var height = $(window).height()
 var formatPercent = d3.format(".0%");
 
 let vizState = { "partition":{"other":0.8, "hover":1, "standart":1},
-                 "point":{"other":.6, "hover":1, "standart":.8, "points":.2}
+                 "points":{"other":.6, "hover":1, "standart":.8, "points":.6},
+                 "heat1":{"other":.6, "hover":1, "standart":.8, "points":.4},
+                 "heat2":{"other":.6, "hover":1, "standart":.8, "points":.4}
                }
 //  MAP
 var projection = d3.geoMercator()
@@ -27,11 +29,11 @@ var svg = d3.select("#svg-container")
 var dd = d3.select('#myDropdown');
 var dv = d3.select('#vizMode');
 
-var gradient = d3.scaleThreshold().domain([0, 1]).range(['#b2db6b',
-                                                        '#cfdb6b',
-                                                        '#f7e99d',
-                                                        '#f6bc64',
-                                                        '#fc7c3c']);
+var gradient = d3.scaleThreshold().domain([.1,.25, .56,.65]).range(['#b2db6b',
+                                                                     '#cfdb6b',
+                                                                     '#f7e99d',
+                                                                     '#f6bc64',
+                                                                     '#fc7c3c']);
 
 
 var legend = colorbar();
@@ -215,7 +217,7 @@ var cm_tbody = cm_table.append('tbody');
 function handleMouseOver(d, i) {
     // Add interactivity
     d3.select(this).raise();
-
+    console.log(MODE);
     if (!isNaN(d.properties[MODE])) {
         decolorize_other_communities(d, i, MODE);
         populate_ct_table(d, i, MODE);
@@ -442,6 +444,7 @@ function decolorize_other_communities(d, i) {
 }
 
 function colorize_back(d, i) {
+  console.log(vMODE)
     cts.selectAll(".tract")
         .style('opacity', vizState[vMODE]["standart"]);
 }

@@ -7,6 +7,9 @@ var height = $(window).height()
 
 var formatPercent = d3.format(".0%");
 
+let vizState = { "partition":{"other":0.8, "hover":1, "standart":1},
+                 "point":{"other":.6, "hover":1, "standart":.8, "points":.2}
+               }
 //  MAP
 var projection = d3.geoMercator()
     .center([-74.00, 40.72])
@@ -24,7 +27,7 @@ var svg = d3.select("#svg-container")
 var dd = d3.select('#myDropdown');
 var dv = d3.select('#vizMode');
 
-var gradient = d3.scaleQuantile().domain([0, 1]).range(['#b2db6b',
+var gradient = d3.scaleThreshold().domain([0, 1]).range(['#b2db6b',
                                                         '#cfdb6b',
                                                         '#f7e99d',
                                                         '#f6bc64',
@@ -154,8 +157,6 @@ function update_histograms(comm) {
         });
 }
 // geography
-
-var bs = svg.append("g").attr('id', 'boros');
 var cts = svg.append("g").attr('id', 'cts');
 
 var t = textures.lines()
@@ -166,27 +167,24 @@ var t = textures.lines()
 
 svg.call(t);
 
+// next time need to use state object
 var MODE = 'part_all_';
 var vMODE = 'partition';
 var comm_stats, all_comm_stats, data;
 
-
-// var comm_colors2 = ["#d67966", "#7bb3ce", "#56ce6c", "#b2ef6e", "#85c43c",
-//     "#e8b245", "#7fefc4", "#fcbaea", "#539ca5", '#8154a5',
-//     "black", '#0A8FCC', '#00AEFF', '#3DE8DF', '#732AFF', '#E94FB5','#EDBFA5',
-//                    '#E0E572', '#23E280', '#CEF4FF'
-// ];
-
-var comm_colors = ['#022864', "#e8b245", "#85c43c", '#E94FB5',
-            '#01679E', '#00AEFF',
-            '#3DE8DF', '#732AFF', '#EDBFA5',
-            '#E0E572', '#23E280', '#CEF4FF',
-            "#7fefc4", "#539ca5"];
+var ordinalScale = d3.scaleOrdinal()
+                     .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24])
+                     .range(['#022864', "#e8b245", "#85c43c", '#E94FB5',
+                             '#01679E', '#00AEFF','#3DE8DF', '#732AFF',
+                             '#EDBFA5', '#E0E572', '#23E280', '#CEF4FF',
+                             "#7fefc4", "#539ca5", "#d67966", "#7bb3ce",
+                             "#56ce6c", '#2f87f0', "#184478", "#f07dff",
+                             "#fa745c", '#ffea2b', "#a62929", "#4e1955"]);
 
 // color for communities, NA texture elsewise
 get_color = function(d, mode) {
     if (!isNaN(d.properties[mode])) {
-        return comm_colors[d.properties[mode]];
+        return ordinalScale(d.properties[mode])
     } else {
         return t.url()
     }
@@ -216,8 +214,7 @@ var cm_tbody = cm_table.append('tbody');
 
 function handleMouseOver(d, i) {
     // Add interactivity
-    // console.log(MODE, 'Tract:', d.properties);
-
+    d3.select(this).raise();
 
     if (!isNaN(d.properties[MODE])) {
         decolorize_other_communities(d, i, MODE);
@@ -441,12 +438,12 @@ function decolorize_other_communities(d, i) {
         .filter(function(dd) {
             return dd.properties[MODE] != d.properties[MODE];
         }) // <== This line
-        .style('opacity', .8);
+        .style('opacity', vizState[vMODE]["other"]);
 }
 
 function colorize_back(d, i) {
     cts.selectAll(".tract")
-        .style('opacity', 1);
+        .style('opacity', vizState[vMODE]["standart"]);
 }
 
 
@@ -458,14 +455,14 @@ function updateViz(MODE, vMODE){
         legend.style("visibility", "hidden");
 
         cts.selectAll(".tract")
-            .style('fill-opacity', 1.)
+            .style('fill-opacity', vizState[vMODE]['standart'])
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
     }
     else if(vMODE == 'points'){
         cts.selectAll(".tract")
-            .style('fill-opacity', 1.0)
+            .style('fill-opacity', vizState[vMODE]['standart'])
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })

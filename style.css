@@ -32,9 +32,8 @@ path.back {
 
 .tract:hover {
   stroke: white;
-  fill-opacity:1 !important;
+  fill-opacity:1;
   stroke-width: 2px;
-
 }
 
 

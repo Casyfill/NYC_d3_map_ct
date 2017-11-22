@@ -233,7 +233,7 @@ var cm_tbody = cm_table.append('tbody');
 function handleMouseOver(d, i) {
     // Add interactivity
     d3.select(this).raise();
-    console.log(MODE);
+    // console.log(MODE);
     if (!isNaN(d.properties[MODE])) {
         decolorize_other_communities(d, i, MODE);
         populate_ct_table(d, i, MODE);
@@ -578,8 +578,8 @@ $('#vizMode > .dropdown-menu a').click(function(d) {
 
 $('.btn').button();
 $("#download_btn").click(function(d) {
-    console.log('downoload!')
-    download_comm(MODE)
+    console.log('downoload!', MODE);
+    download_comm(MODE);
 });
 
 

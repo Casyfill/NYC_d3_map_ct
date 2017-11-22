@@ -58,15 +58,39 @@ function get_community_datas(i, comm_stats){
 	return comm_stats.filter(function(d){ return d.key == i })[0]
 }
 
+var download = function(content, fileName, mimeType) {
+  var a = document.createElement('a');
+  mimeType = mimeType || 'application/octet-stream';
+
+  if (navigator.msSaveBlob) { // IE10
+    navigator.msSaveBlob(new Blob([content], {
+      type: mimeType
+    }), fileName);
+  } else if (URL && 'download' in a) { //html5 A[download]
+    a.href = URL.createObjectURL(new Blob([content], {
+      type: mimeType
+    }));
+    a.setAttribute('download', fileName);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } else {
+    location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+  }
+}
+
 function download_comm(MODE){
-	let data = all_comm_stats[MODE];
-	let headers = Object.keys(data[0])
-	var lineArray = [headers];
-	data.forEach(function (infoArray, index) {
-	    var line = Object.values(infoArray).join(",");
-	    lineArray.push(index == 0 ? "data:text/csv;charset=utf-8," + line : line);
-		});
-	var csvContent = lineArray.join("\n");
-	var encodedUri = encodeURI(csvContent);
-	window.open(encodedUri);
+	// console.log(MODE);
+	var data = []
+		  config = {quotes: false,
+								quoteChar: '"',
+								delimiter: ",",
+								header: true,
+								newline: "\r\n"
+							};
+
+	all_comm_stats[MODE].forEach(function(d){d['value']["Community"] = parseInt(d["key"]); data.push(d['value'])});
+	console.log(data);
+	csvContent = Papa.unparse(data, config);
+	download(csvContent, 'community_stats_' + MODE + '.csv', 'text/csv;encoding:utf-8');
 }

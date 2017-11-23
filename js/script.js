@@ -5,10 +5,13 @@ if ($(window).width() >= 770) {
 }
 var height = $(window).height()
 
+
+
+
 var formatPercent = d3.format(".0%");
 
 let vizState = { "partition":{"other":0.8, "hover":1, "standart":1},
-                 "points":{"other":.6, "hover":1, "standart":1, "points":.6},
+                 "points":{"other":.6, "hover":.8, "standart":.8, "points":.6},
                  "heat1":{"other":.6, "hover":1, "standart":1, "points":.4},
                  "heat2":{"other":.6, "hover":1, "standart":1, "points":.4}
                }
@@ -24,6 +27,18 @@ var path = d3.geoPath()
 var svg = d3.select("#svg-container")
     .append("svg")
     .attr("class", "map");
+
+var base = d3.select("#svg-container");
+var chart = base.append("canvas")
+              .attr("width", width)
+              .attr("height", height)
+              .style("position", "absolute")
+              .style("left", "0px")
+              .style("top", "0px")
+              .style("z-index", "1000")
+              .style("visibility", "hidden");
+var upoints;
+var context = chart.node().getContext("2d");
 
 // var scatter;
 var dd = d3.select('#myDropdown');
@@ -259,22 +274,24 @@ function handleMouseOut(d, i) {
 }
 
 var files = ["data/geo/ct2010s.json", "data/communities/2017_10_15_combined_data.csv",
-             "data/communities_stats/communities_stats5.json"];
+             "data/communities_stats/communities_stats5.json", 'data/users/2017_11_12_users.csv'];
 
 //  LOAD DATA
 d3.queue(4)
     .defer(d3.json, files[0])
     .defer(d3.csv, files[1])
     .defer(d3.json, files[2])
+    .defer(d3.csv, files[3])
     .await(ready);
 
 
-function ready(error, nyc, csv_data, comm_properties) {
+function ready(error, nyc, csv_data, comm_properties, users) {
     if (error) throw error;
     populate_empty_table(null_ct, ct_tbody);
     populate_empty_table(null_cm, cm_tbody);
 
     data = csv_data;
+    upoints = users;
     data['part_user_h'] = data['part_user'];
     comm_properties['part_user_h'] = comm_properties['part_user'];
     all_comm_stats = get_all_community_stats(data, comm_properties);
@@ -415,10 +432,26 @@ function ready(error, nyc, csv_data, comm_properties) {
         let M = d3.mean(data, function(d){return d[hist_properties[i]]});
         h_means[i].text("Median: " + ff(M)).raise()
     }
-
 }
 
-
+function populateScatter(upoint, visMode){
+  context.globalAlpha = vizState[visMode]['points'];
+  console.log("Scatter", visMode);
+  context.clearRect(0, 0, width, height);
+  upoints.forEach(function(d, i) {
+      var p = projection([d['lon'], d['lat']]);
+      if( visMode == 'points'){
+        color = ordinalScale(d['Community'])
+        color = tinycolor(color).darken(20).toString();
+      } else {color = 'white'};
+      context.beginPath();
+      context.rect(p[0], p[1], 1, 1);
+      context.fillStyle = color;
+      context.fill();
+      context.closePath();
+  });
+  console.log(color);
+}
 
 // RESIZE
 d3.select(window).on('resize', MapSizeChange);
@@ -440,6 +473,7 @@ function MapSizeChange() {
 
     // resize the map
     cts.selectAll(".tract").attr('d', path);
+    populateScatter(upoints, vMODE);
 
     hist_height = ((document.getElementById('infocolumn').clientHeight - 60)*.52 - 5 - 24)/4 - 5 - 18 - 10;
 
@@ -476,6 +510,7 @@ function updateViz(MODE, vMODE){
 
     if (vMODE == 'partition'){
         // scatter.style("visibility", "hidden");
+        chart.style("visibility", "hidden");
         legend.style("visibility", "hidden");
 
         cts.selectAll(".tract")
@@ -490,18 +525,15 @@ function updateViz(MODE, vMODE){
             .style('fill', function(d) {
                 return get_color(d, MODE)
             })
-        // console.log(scatter);
-        // scatter.style('fill', function(d) {
-        //     return comm_colors[d.Community]
-        // }).style('fill-opacity', .4);;
 
-        // scatter.style("visibility", 'visible');
+        populateScatter(upoints, vMODE);
+
+        chart.style("visibility", 'visible');
         legend.style("visibility", "hidden");
 
     } else if(vMODE == 'heat1'){
-
-        // scatter.style("fill", "white").style('fill-opacity', .2);
-        // scatter.style("visibility", "visible");
+        populateScatter(upoints, vMODE);
+        chart.style("visibility", "visible");
         legend.style("visibility", "visible")
 
         cts.selectAll(".tract")
@@ -518,6 +550,8 @@ function updateViz(MODE, vMODE){
 
         // scatter.style("fill", "white").style('fill-opacity', .2);
         // scatter.style("visibility", "visible");
+        populateScatter(upoints, vMODE);
+        chart.style("visibility", 'visible');
         legend.style("visibility", "visible")
 
         cts.selectAll(".tract")

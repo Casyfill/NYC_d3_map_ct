@@ -207,3 +207,7 @@ fieldset[disabled] {
   background-color: #72787c;
   border-color: #4a4e51;
 }
+
+canvas{
+  pointer-events:none;
+}

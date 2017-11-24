@@ -30,8 +30,9 @@ var svg = d3.select("#svg-container")
 
 var base = d3.select("#svg-container");
 var chart = base.append("canvas")
-              .attr("width", width)
-              .attr("height", height)
+              .attr("width", $(window).width())
+              .attr("height", $(window).height())
+              .attr("id", "ptcanvas")
               .style("position", "absolute")
               .style("left", "0px")
               .style("top", "0px")
@@ -276,24 +277,31 @@ function handleMouseOut(d, i) {
 var files = ["data/geo/ct2010s.json", "data/communities/2017_10_15_combined_data.csv",
              "data/communities_stats/communities_stats5.json", 'data/users/2017_11_12_users.csv'];
 
+d3.imageload = function(src, cb) {
+  let image = new Image();
+  image.src = src;
+  image.onload = function() { cb(null, image); };
+  image.onerror = cb;
+}
+
 //  LOAD DATA
-d3.queue(4)
+d3.queue(5)
     .defer(d3.json, files[0])
     .defer(d3.csv, files[1])
     .defer(d3.json, files[2])
-    .defer(d3.csv, files[3])
+    .defer(d3.imageload, 'img/canvas_white.png')
+    .defer(d3.imageload, 'img/canvas_color.png')
     .await(ready);
 
 
-function ready(error, nyc, csv_data, comm_properties, users) {
+function ready(error, nyc, csv_data, comm_properties, img1, img2) {
     if (error) throw error;
     populate_empty_table(null_ct, ct_tbody);
     populate_empty_table(null_cm, cm_tbody);
 
     data = csv_data;
-    upoints = users;
-    data['part_user_h'] = data['part_user'];
-    comm_properties['part_user_h'] = comm_properties['part_user'];
+    upoints = {"points":img2, "other":img1};
+    console.log("images:", img2.src, img1.src);
     all_comm_stats = get_all_community_stats(data, comm_properties);
     var fresh_ctss = topojson.feature(nyc, nyc.objects.ct2010).features;
 
@@ -307,7 +315,7 @@ function ready(error, nyc, csv_data, comm_properties, users) {
         e.properties.part_hidden_ = Math.round(parseFloat(csv[e.properties.geoid]['part_hidden_']))
         e.properties.part_recipr_ = Math.round(parseFloat(csv[e.properties.geoid]['part_recipr_']))
         e.properties.part_user = Math.round(parseFloat(csv[e.properties.geoid]['part_user']))
-        e.properties.part_user_h = e.properties.part_user
+        // e.properties.part_user_h = e.properties.part_user
         e.properties.population = parseInt(csv[e.properties.geoid].population)
         e.properties.income = parseInt(csv[e.properties.geoid].median_income)
         e.properties.own_occupied = parseFloat(csv[e.properties.geoid].owner_occupied_housing_units)
@@ -450,8 +458,31 @@ function populateScatter(upoint, visMode){
       context.fill();
       context.closePath();
   });
-  console.log(color);
 }
+
+function populateScatter2(visMode){
+  console.log("Scatter2", visMode);
+  console.log(upoints);
+  if(visMode == 'points'){
+    console.log('points chosen', visMode);
+    var img = upoints['points'];
+  } else {
+    console.log('other chosen', visMode);
+    var img = upoints['other'];
+  }
+  canvas = context.canvas;
+
+  var hRatio = width / img.width    ;
+  var vRatio = height / img.height  ;
+  var ratio  = Math.min ( hRatio, vRatio );
+  var centerShift_x = ( width - img.width*ratio ) / 2,
+      centerShift_y = ( height - img.height*ratio ) / 2;
+
+  context.clearRect(0,0,canvas.width, canvas.height);
+  context.drawImage(img, 0,0, img.width, img.height,
+                    centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);
+}
+
 
 // RESIZE
 d3.select(window).on('resize', MapSizeChange);
@@ -473,7 +504,8 @@ function MapSizeChange() {
 
     // resize the map
     cts.selectAll(".tract").attr('d', path);
-    populateScatter(upoints, vMODE);
+    populateScatter2(vMODE);
+    // populateScatter(upoints, vMODE);
 
     hist_height = ((document.getElementById('infocolumn').clientHeight - 60)*.52 - 5 - 24)/4 - 5 - 18 - 10;
 
@@ -526,13 +558,15 @@ function updateViz(MODE, vMODE){
                 return get_color(d, MODE)
             })
 
-        populateScatter(upoints, vMODE);
+        // populateScatter(upoints, vMODE);
+        populateScatter2(vMODE);
 
         chart.style("visibility", 'visible');
         legend.style("visibility", "hidden");
 
     } else if(vMODE == 'heat1'){
-        populateScatter(upoints, vMODE);
+        // populateScatter(upoints, vMODE);
+        populateScatter2(vMODE);
         chart.style("visibility", "visible");
         legend.style("visibility", "visible")
 
@@ -548,9 +582,8 @@ function updateViz(MODE, vMODE){
 
     } else if(vMODE == 'heat2'){
 
-        // scatter.style("fill", "white").style('fill-opacity', .2);
-        // scatter.style("visibility", "visible");
-        populateScatter(upoints, vMODE);
+        // populateScatter(upoints, vMODE);
+        populateScatter2(vMODE);
         chart.style("visibility", 'visible');
         legend.style("visibility", "visible")
 
@@ -609,12 +642,17 @@ $('#vizMode > .dropdown-menu a').click(function(d) {
 
     });
 
+// IMAGE DOWNLOAD
+// document.getElementById('im_download').addEventListener('click', function() {
+//         downloadCanvas(this, 'ptcanvas', 'test.png');
+//     }, false);
 
 $('.btn').button();
 $("#download_btn").click(function(d) {
     console.log('downoload!', MODE);
     download_comm(MODE);
 });
+
 
 
 function colorbar(){

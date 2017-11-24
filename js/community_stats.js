@@ -94,3 +94,10 @@ function download_comm(MODE){
 	csvContent = Papa.unparse(data, config);
 	download(csvContent, 'community_stats_' + MODE + '.csv', 'text/csv;encoding:utf-8');
 }
+
+// IMAGE
+function downloadCanvas(link, canvasId, filename) {
+    link.href = document.getElementById(canvasId).toDataURL();
+    link.download = filename;
+		console.log(link);
+}

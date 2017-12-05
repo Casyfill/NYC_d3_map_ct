@@ -11,7 +11,7 @@ var null_ct = [],
  'Median Income', 'community'].forEach(function(d){null_ct.push({'key':d, 'value':'NA'})});
 
 ['Community N', 'Tracts', 'Population',
- 'Users', 'Out Connections', 
+ 'Users', 'Out Connections',
  'In Connections', 'Internal Connections'].forEach(function(d){null_cm.push({'key':d, 'value':'NA'})});
 
 ['Community N', 'Tracts', 'Population', 'Users',
@@ -28,7 +28,7 @@ function populate_ct_table(d,i, mode){
     // console.log("population table");
     var new_data = [{'key':'Census Tract', "value":d.properties.geoid},
                 {'key':'Neighborhood', "value":d.properties.NTAName},
-                {'key':'Population', "value":f(d.properties.population)},                        
+                {'key':'Population', "value":f(d.properties.population)},
                 {'key':'Median Income', "value":replacer(d.properties.income)},
                 {'key':'community', "value": d.properties[mode]}]
 
@@ -49,7 +49,7 @@ function populate_ct_table(d,i, mode){
     }
 
 function populate_cm_table(d,i, mode){
-    
+
 
     if(mode == 'part_user'){
       var new_data = [{'key':'Community N', 'value':d.key},
@@ -58,11 +58,11 @@ function populate_cm_table(d,i, mode){
                       {'key':"Users", 'value':f(d.value.communityUsers)},
                       {'key':"Susceptibility, hidden", 'value':ff(d.value.Susceptibility)},
                       {'key':"Susceptibility, predicted", 'value':ff(d.value.SusceptibilityPred)},
-                      {'key':"Network Closedness", "value": ff(d.value.NetworkClosedness)}, 
-                      {'key':"Spatial Diversity", "value": ff(d.value.SpatialDiversity)}, 
+                      {'key':"Network Closedness", "value": ff(d.value.NetworkClosedness)},
+                      {'key':"Spatial Diversity", "value": ff(d.value.SpatialDiversity)},
                       {'key':"Network Density", "value": ff(d.value.NetworkDensity)},
                       {'key':"Hashtag Entropy", "value": ff(d.value.HashtagEntropy)},
-                      {'key':"Language Entropy", "value": ff(d.value.LanguageEntropy)}];                      
+                      {'key':"Language Entropy", "value": ff(d.value.LanguageEntropy)}];
     } else{
       var new_data = [{'key':'Community N', 'value':d.key},
                       {'key':'Tracts', 'value':d.value.tracts},
@@ -121,12 +121,12 @@ function empty_table(null_data, stbody){
     // create a row for each object in the data
     var rows = stbody.selectAll("tr")
                      .data(null_data, function(d) { return d.key });
-    
+
     rows.exit().remove();
     var new_rows = rows.enter().append('tr');
 
     // create a cell in each row for each column
-    
+
     var cells = new_rows.merge(rows).selectAll('td')
     // console.log(cells);
     cells.data(function(row) { return columns.map(function(column) { return {column: column, value: row[column]};

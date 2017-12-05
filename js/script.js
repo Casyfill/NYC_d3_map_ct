@@ -430,6 +430,7 @@ function ready(error, nyc, csv_data, comm_properties, users) {
 
     for (i = 0; i < hist_properties.length; i++) {
         let M = d3.mean(data, function(d){return d[hist_properties[i]]});
+        // var format = [fv, formatPercent, f, f][i];
         h_means[i].text("Median: " + ff(M)).raise()
     }
 }
@@ -654,7 +655,11 @@ function colorbar(){
       key.append("g")
          .attr("class", "y axis")
          .call(yAxis)
-         .attr("transform", "translate(15, 0)");
+         .attr("transform", "translate(15, 0)")
+         .append("text")
+         .attr("dy", ".62em")
+         .style("text-anchor", "start")
+         .text('Susceptibility');
 
       key.style("visibility", "hidden");
       return key;

@@ -655,9 +655,12 @@ function colorbar(){
       key.append("g")
          .attr("class", "y axis")
          .call(yAxis)
-         .attr("transform", "translate(15, 0)")
+         .attr("transform", "translate(15, 0)");
+
+      key.append("g")
+         .attr("class", 'legend name')
          .append("text")
-         .attr("dy", ".62em")
+         .attr("transform", "translate(0, -15)")
          .style("text-anchor", "start")
          .text('Susceptibility');
 

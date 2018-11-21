@@ -1,0 +1,173 @@
+.item1 { grid-area: header; }
+.item3 { grid-area: main; }
+.item2 { grid-area: menu; }
+
+.grid-container {
+  display: grid;
+  grid-template-rows:  50px auto ;
+  grid-template-columns:  repeat( 6, minmax(240px, 1fr) );
+  grid-template-areas:
+    'header header header header header header'
+    'main main main main main main';
+  height: 100vh;
+}
+.grid-container > div {
+  text-align: center;
+  padding: 0px 0;
+}
+
+.item1{
+  background: #d9d9d9;
+}
+
+.item2{
+  color: #081C4F;
+  font-family: "Source Sans Pro";
+  font-size: 18px;
+  font-weight: 300;
+  text-align: left;
+}
+
+.item3{
+  background: #636b6d;
+  display: flex;
+}
+
+#timeline{
+  padding-top: 5px;
+}
+
+h1.Title{
+  color: #202020e6;
+  font-family: 'Righteous';
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 35px;
+  text-align: left;
+  padding: 10px 0;
+  margin: 0px;
+  margin-left: 10px;
+}
+
+h2.Secondary{
+  color: #000000;
+  font-family: "Source Sans Pro";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: left;
+  margin: 0px;
+}
+
+td h5{
+  color: #081C4F;
+  font-family: "Source Sans Pro";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+  margin: 0px;
+  padding-bottom: 4px;
+}
+
+#footnotes {
+  padding-bottom: 35px;
+  padding-top: 10px;
+}
+
+#footnotes p {
+  color: #8C8C8C;
+  font-family: "Source Sans Pro";
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 16px;
+  text-align: left;
+  margin: 4px;
+
+}
+
+#interface{
+  justify-content: left;
+  /*display: flex;*/
+  font-family: "Source Sans Pro";
+  font-size: 16px;
+  line-height: 30px;
+}
+
+#interface div.vega-bind{
+  margin-left: 10px;
+  margin-right: 3px;
+}
+
+#interface select, input {
+  margin-left: 10px;
+  margin-right: 3px;
+}
+
+label{
+  font-family: 'Righteous'
+}
+
+#interface{
+ font-family: 'Righteous' 
+}
+
+text.body{
+  color: #202020e6;
+  font-family: "Source Sans Pro";
+  font-size: 16px;
+  line-height: 30px;
+}
+
+text.disclimer{
+  color: #8C8C8C;
+  font-family: "Source Sans Pro";
+  font-size: 12px;
+  line-height: 16px;
+}
+
+#Container-Data{
+  width: 100%;
+  height: 100%;
+}
+
+img#v404{
+  display:block;
+  width:100%; height:100%;
+  object-fit: cover;
+}
+
+g.role-mark > path {
+  -webkit-transition: width 2s, height 2s; /* For Safari 3.1 to 6.0 */
+  transition: width 2s, height 2s;
+}
+
+#vis-tooltip{
+  font-family: "Source Sans Pro";
+  font-size: 14px;
+  font-weight: 300;
+}
+
+#vis-tooltip h5{
+  font-size: 18px;
+  font-weight: 900;
+  color: red;
+}
+
+a:link {
+    color: #032765;
+}
+
+a:hover {
+    background-color:#3FE8DF;
+}
+
+input[type="range"] {
+    -webkit-appearance: slider-horizontal;
+    color: rgb(144, 144, 144);
+    cursor: default;
+    padding: initial;
+    border: initial;
+    margin: 2px;
+}
+

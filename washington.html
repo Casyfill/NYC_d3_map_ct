@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@3.14.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-tooltip@0.9.10"></script>
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
-<script src="js/main.js"></script>
+<script src="js/dc.js"></script>
 <script>
 function tl_update(){
 	let tl = document.getElementById("tl");
@@ -27,8 +27,10 @@ VIEW.signal("time2", Number(tl.value)).signal("time_formatted", time_formatted).
 <body scroll="no" style="overflow: hidden">
 	<div class="grid-container">
 		<div class="item1" style="justify-content: space-between;">
-			<span id="header" style="float:left; text-aling:left">
+			<span id="header" style="float:left; text-align:left">
 				<h1 class="Title" style="display: inline-block;"></h1>
+				<span class='citylink'><a href='./nyc.html'>New York</a></span>
+                <span class='citylink'><a href='./taipei.html'>Taipei</a></span>
 				
 			</span>
 			<span style="min-height: 60px; display: inline-flex; align-items: center; float:right;">

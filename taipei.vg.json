@@ -1,0 +1,581 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "autosize": {
+    "resize": true,
+    "type": "fit"
+  },
+  "config": {
+    "legend": {
+      "gradientThickness": 50,
+      "gradientLength": 300
+    }
+  },
+  "data": [
+    {
+        "name": "boundaries",
+        "url": "data/taipei/taipei_ct_topo.json",
+        "format": {"feature": "taipei_ct", "type":"topojson"}
+    },
+    {
+      "name": "stations",
+      "url": "data/taipei/taipei_stations2.json",
+      "format": {"type": "json", "property": "features"}
+    },
+    {
+      "format": {
+        "type": "csv"
+      },
+      "name": "anomals",
+      "transform": [
+        {
+          "as": "time",
+          "expr": "toNumber(datum.time)",
+          "type": "formula"
+        },
+        {
+          "as": "value",
+          "expr": "toNumber(datum.value)",
+          "type": "formula"
+        }
+      ],
+      "url": "data/taipei/anomals_taipei.csv"
+    },
+    {
+      "name": "anomals_filtered",
+      "source": "anomals",
+      "transform": [
+        {
+          "expr": "datum.time === time",
+          "type": "filter"
+        }
+      ]
+    },
+    {
+      "name": "merged_zones",
+      "source": "stations",
+      "transform": [
+        {
+          "fields": [
+            "properties.stop_id"
+          ],
+          "from": "anomals_filtered",
+          "key": "OBJECTID",
+          "type": "lookup",
+          "values": [
+            "time",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "zones_no_anomalies",
+      "source": "merged_zones",
+      "transform": [
+        {
+          "expr": "datum.value === null",
+          "type": "filter"
+        }
+      ]
+    },
+    {
+      "name": "zones_anomalies",
+      "source": "merged_zones",
+      "transform": [
+        {
+          "expr": "datum.value != null",
+          "type": "filter"
+        }
+      ]
+    },
+    {
+      "name": "significant_dates",
+      "url": "data/taipei/dates.csv",
+      "format": {
+        "type": "csv"
+      }
+    }
+  ],
+  "height": 700,
+  "marks": [
+    {
+      "encode": {
+        "update": {
+          "height": {
+            "signal": "height - 75"
+          },
+          "width": {
+            "signal": "width"
+          }
+        }
+      },
+      "legends": [
+        {
+          "fill": "color",
+          "orient": "top-left",
+          "title": "Anomality index (p-value)",
+          "type": "gradient",
+          "gradientThickness": 50,
+          "gradientLength": 300
+        }
+      ],
+      "marks": [
+        {
+          "from": {"data": "boundaries"},
+          "type": "shape",
+          "name": "borders",
+          "transform": [{"projection": "projection", "type": "geoshape"}],
+          "encode": {
+            "enter": {
+              "stroke": {"value":"black"}
+            }
+          }
+        },
+        {
+          "encode": {
+            "enter": {
+              "stroke": {
+                "value": "#636b6d"
+              },
+              "tooltip": {
+                "signal": "{'title':datum.properties.stop_name, 'work here':datum.work, 'live here':datum.live }"
+              }
+            },
+            "hover": {
+              "strokeWidth": {
+                "value": 3
+              },
+              "zindex": {
+                "value": 1
+              }
+            },
+            "update": {
+              "fill": {
+                "value": "lightgrey"
+              },
+              "strokeWidth": {
+                "value": 0.5
+              },
+              "zindex": {
+                "value": 0
+              }
+            }
+          },
+          "from": {
+            "data": "zones_no_anomalies"
+          },
+          "name": "grey_marks",
+          "style": [
+            "geoshape"
+          ],
+          "transform": [
+            {
+              "projection": "projection",
+              "type": "geoshape"
+            }
+          ],
+          "type": "shape"
+        },
+        {
+          "encode": {
+            "enter": {
+              "tooltip": {
+                "signal": "{'title':datum.properties.stop_name, 'value':format(datum.value, '.1e'), 'work here':datum.work, 'live here':datum.live }"
+              }
+            },
+            "hover": {
+              "stroke": {
+                "value": "#032765"
+              },
+              "strokeWidth": {
+                "value": 1
+              },
+              "zindex": {
+                "value": 1
+              }
+            },
+            "update": {
+              "fill": {
+                "field": "value",
+                "scale": "color"
+              },
+              "stroke": {
+                "value": "black"
+              },
+              "strokeWidth": {
+                "value": 0.5
+              },
+              "zindex": {
+                "value": 0.1
+              }
+            }
+          },
+          "from": {
+            "data": "zones_anomalies"
+          },
+          "name": "tzones_marks",
+          "style": [
+            "geoshape"
+          ],
+          "transform": [
+            {
+              "projection": "projection",
+              "type": "geoshape"
+            }
+          ],
+          "type": "shape"
+        }
+      ],
+      "name": "map",
+      "type": "group",
+      "projections": [
+        {
+          "name": "projection",
+          "type": "mercator",
+          "fit": {"signal": "[data('boundaries'), data('boundaries')]"},
+          "size": {"signal": "[width, height]"}
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "timeline",
+      "encode": {
+        "enter": {
+          "clip": true,
+          "fill": {"value":"#636b6d"}
+        },
+        "update": {
+          "x": {
+            "value": 0
+          },
+          "height": {
+            "value": 50
+          },
+          "y": {
+            "signal": "height - 90"
+          },
+          "width": {
+            "signal": "width"
+          }
+        }
+      },
+      "axes": [
+        {
+          "orient": "bottom",
+          "scale": "realTimeScale",
+          "domain": true,
+          "labelPadding": 10,
+          "ticks": true,
+          "tickColor": "black",
+          "tickOffset": 0,
+          "tickSize": 10,
+          "offset": -20,
+          "title": {"signal": "time_formatted"},
+          "titleAlign": "end",
+          "tickCount": "month",
+          "encode": {
+            "ticks": {
+              "update": {
+                "stroke": {"value": "black"}
+              }  
+            },
+            "domain": {
+                "enter": {
+                    "domainColor": {"value": "black"},
+                    "domainWidth": {"value": 1}
+                },
+                "update": {
+                    "stroke": {"value": "black"}
+                }  
+            },
+            "title": {
+              "update": {
+                "align": {"value": "right"},
+                "x": {"signal": "width -90"},
+                "y": {"value": -40},
+                "fontSize": {"value": 20}
+              }
+            }
+          }
+        }
+      ],
+      "data": [
+        {
+          "name": "timeline",
+          "source": "anomals",
+          "transform": [
+            {
+              "type": "aggregate",
+              "groupby": [
+                "time"
+              ],
+              "fields": [
+                "value"
+              ],
+              "ops": [
+                "min"
+              ]
+            }
+          ]
+        }
+      ],
+      "marks": [
+        {"type": "symbol",
+         "name": "previous",
+         "encode": {
+          "enter": {
+            "y": {"value":0},
+            "size": {"value":300},
+            "shape": {"value": "triangle-left"}
+          },
+          "update": {
+            "x": {"signal":"width - 70"},
+            "fill": {"value": "black"}
+          },
+          "hover": {
+            "fill": {"value": "lightgrey"}
+          }
+         }},
+         {"type": "symbol",
+         "name": "next",
+         "encode": {
+          "enter": {
+            "y": {"value":0},
+            "size": {"value":300},
+            "shape": {"value": "triangle-right"}
+          },
+          "update": {
+            "x": {"signal":"width - 45"},
+            "fill": {"value": "black"}
+          },
+          "hover": {
+            "fill": {"value": "lightgrey"}
+          }
+         }},
+        {
+          "type": "rule",
+          "name": "significant",
+          "from": {"data": "significant_dates"},
+          "encode": {
+            "enter": {
+              "x" : { "scale": "timeScale", "field": "time"},
+              "y": {"value": 15},
+              "y2": {"value": 45},
+
+              "zindex": {"value": 0.5}
+            },
+            "update": {
+              "stroke": {"value": "darkred"},
+              "strokeWidth": {"value": 2}
+            },
+            "hover": {
+              "stroke": {"value": "lightgrey"},
+              "strokeWidth": {"value": 4}
+            }
+          }
+        },
+        {
+          "type": "symbol",
+          "name": "timeSelect",
+          "encode": {
+            "enter": {
+              "zindex": {
+                "value": 1
+              },
+              "shape": {"value": "circle"},
+              "y": {
+                "value": 30
+              },
+              "size": { "value": 200},
+              "stroke": {"value": "black"}
+            },
+            "update": {
+              "x": {
+                "signal": "time",
+                "scale": "timeScale"
+              },
+              
+              "fill": {
+                "value": "black"
+              }
+              
+            },
+            "hover": {
+              "fill": {
+                "value": "lightgrey"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "padding": {
+    "bottom": 5,
+    "left": 5,
+    "right": 5,
+    "top": 5
+  },
+  "signals": [
+    {"name": "datetime",
+      "forse": true,
+     "bind": {
+      "input": "select",
+      "options": [
+        "27/10/17 12:00",
+        "11/11/16 06:00",
+        "11/11/16 12:00",
+        "11/11/16 21:00",
+        "11/12/16 21:00",
+        "11/23/16 15:00",
+        "11/23/16 18:00",
+        "11/23/16 21:00",
+        "11/26/16 15:00",
+        "12/30/16 15:00",
+        "12/31/16 15:00",
+        "07/03/17 18:00",
+        "07/07/17 15:00"
+      ],
+      "element": "#interface"
+     }
+    },
+    {
+      "name": "parseDate",
+      "update": "round((toDate(datetime + ' GMT') - 1451617200000) / (3 * 3600 * 1000))"
+    },
+    {
+      "name": "numericDomain",
+      "value": [1456, 5847]
+    },
+    {
+      "name": "time_on_hover",
+      "on": [
+        {
+          "events": "@significant:mouseover",
+          "update": "toNumber(item().datum.time)"
+        }
+      ]
+    },
+    {
+      "name": "timeString_on_hover",
+      "on": [
+        {
+          "events": "@significant:mouseover",
+          "update": "item().datum.datetime"
+        }
+      ]
+    },
+    {
+      "name": "time_formatted",
+      "update": "utcFormat(timer, '%A %b %d %Y, %H:00')"
+    },
+
+    {"name": "timer",
+     "update": "time * 3 * 3600 * 1000 + 1451617200000"
+    },
+
+    {
+      "name":"currentObject",
+      "on": [
+        {
+          "events": "@significant:click",
+          "update": "toNumber(item().datum.time)"
+        }
+      ]
+    },
+    
+    {
+      "name": "time",
+      "value": 5321,
+      "on": [
+        {
+          "events": "[@timeSelect:mousedown, window:mouseup] > window:mousemove!",
+          "update": "clamp(round(invert('timeScale', x())), numericDomain[0], numericDomain[1])"
+        },
+        {
+        "events": "@timeline:wheel, @timeSelect:wheel",
+        "update": "clamp(time + event.deltaY, numericDomain[0], numericDomain[1])",
+        "throttle": 200
+        },
+        {
+          "events": "@significant:click",
+          "update": "toNumber(item().datum.time)"
+        },
+        {
+         "events": "@next:click",
+         "update": "clamp(time + 1, numericDomain[0], numericDomain[1])"
+        },
+        {
+         "events": "@previous:click",
+         "update": "clamp(time - 1, numericDomain[0], numericDomain[1])"
+        },
+        {
+          "events": {"source":"window", "type":"keydown", "filter": ["event.key == 'ArrowLeft'"]},
+          "update": "clamp(time - 1, numericDomain[0], numericDomain[1])"
+        },
+        {
+          "events": {"source":"window", "type":"keydown", "filter": ["event.key == 'ArrowRight'"]},
+          "update": "clamp(time + 1, numericDomain[0], numericDomain[1])"
+        },
+        {
+          "events": {"signal": "datetime"},
+          "force": true,
+          "update": "round((toDate(datetime + ' GMT') - 1451617200000) / (3 * 3600 * 1000))"
+        }
+
+      ]
+    },
+    {
+      "name": "keyLogger",
+      "value": 0,
+      "on": [
+        {
+        "events": "keypress",
+        "update": "keyLogger + 1"
+        }
+      ]
+    }
+  ],
+  "usermeta": {
+    "title": "Anomaly Index of the City"
+  },
+  "width": 800,
+  "scales": [
+    { 
+      "clamp": true,
+      "domain": [
+        0.01,
+        0
+      ],
+      "name": "color",
+      "nice": true,
+      "range": [
+        "orange",
+        "darkred"
+      ],
+      "type": "linear",
+      "zero": false
+    },
+        {
+          "domain": {"signal": "numericDomain"},
+          "name": "timeScale",
+          "clamp": true,
+          "range": {
+            "signal": "[35, width - 35]"
+          },
+          "type": "linear",
+          "nice": false,
+          "zero": false
+        },
+        {
+          "name": "realTimeScale",
+          "clamp": true,
+          "range": {
+            "signal": "[35, width - 35]"
+          },
+          "type": "time",
+          "domain": { "signal": "[datetime(2016, 6,1, 3), datetime(2018,0,1, 0)]"}
+        }
+  ]
+}

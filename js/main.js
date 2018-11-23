@@ -38,28 +38,6 @@ loader.load(settings['data'])
   });
 
 
-function set_custom(spec) {
-  // set title and subtitle from usermeta part of specs
-  if (spec['usermeta']['title']) {
-    d3.select('h1.Title').text(spec['usermeta']['title']);
-  }
-
-  if (spec['usermeta']['subtitle']) {
-    d3.select('h2.Secondary').text(spec['usermeta']['subtitle']);
-  }
-
-
-  if (spec['usermeta']['footnotes']) {
-    var notes = spec['usermeta']['footnotes'],
-      notes_text = '';
-
-    for (i = 0; i < notes.length; i++) {
-      notes_text += '<p>' + notes[i] + "</p>";
-    }
-    d3.select('div#footnotes').html(notes_text);
-  }
-}
-
 
 function prepare_tooltip_opts(spec) {
 
@@ -79,7 +57,6 @@ function prepare_tooltip_opts(spec) {
 
 function render(vlSpec) {
 
-  set_custom(vlSpec);
   let opt = {
     "actions": false,
     "mode": "vega-lite",

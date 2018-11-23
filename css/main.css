@@ -158,8 +158,16 @@ a:link {
     color: #032765;
 }
 
+
 a:hover {
     background-color:#3FE8DF;
+}
+
+span.citylink > a{
+  color: #202020e6;
+  text-transform: uppercase;
+  font-family: 'Righteous';
+  font-size: 10px;
 }
 
 input[type="range"] {

@@ -16,7 +16,7 @@
         "type": "csv"
       },
       "name": "data",
-      "url": "data/tooltips.csv"
+      "url": "data/nyc/tooltips.csv"
     },
     {
       "format": {
@@ -38,7 +38,7 @@
           ]
         }
       ],
-      "url": "data/taxi_zones.topojson.json"
+      "url": "data/nyc/taxi_zones.topojson.json"
     },
     {
       "format": {
@@ -62,7 +62,7 @@
           "type": "formula"
         }
       ],
-      "url": "data/anomals.csv"
+      "url": "data/nyc/anomals.csv"
     },
     {
       "name": "anomals_filtered",
@@ -114,7 +114,7 @@
     },
     {
       "name": "significant_dates",
-      "url": "data/dates.csv",
+      "url": "data/nyc/dates.csv",
       "format": {
         "type": "csv"
       }

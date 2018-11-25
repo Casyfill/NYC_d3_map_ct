@@ -20,7 +20,7 @@
       "transform": [
         {"type":"filter", "expr": "datum.properties.POP_2010 > 0"}
       ],
-      "url": "data/dc/zipcodes.topojson.json"
+      "url": "data/dc/zipcodes_lite.topojson.json"
     },
     {
       "format": {
@@ -42,9 +42,9 @@
           "as": "value",
           "expr": "toNumber(datum.value)",
           "type": "formula"
-        }
+        } 
       ],
-      "url": "data/dc/anomals.csv"
+      "url": "data/dc/dc_anomalies_processed.csv"
     },
     {
       "name": "anomals_filtered",
@@ -65,7 +65,7 @@
             "properties.OBJECTID"
           ],
           "from": "anomals_filtered",
-          "key": "OBJECTID",
+          "key": "ZIPCODE",
           "type": "lookup",
           "values": [
             "time",
@@ -249,9 +249,6 @@
           "fill": {"value":"#636b6d"}
         },
         "update": {
-          "width": {
-            "signal": "width - 70"
-          },
           "x": {
             "value": 0
           },
@@ -423,34 +420,34 @@
   },
   "signals": [
     {"name": "datetime",
-     "force": true,
+     "description": "dropdown for interesting abnormalities",
      "bind": {
       "input": "select",
       "options": [
-        "01/01/17 15:00",
-        "11/11/16 06:00",
-        "11/11/16 12:00",
-        "11/11/16 21:00",
-        "11/12/16 21:00",
-        "11/23/16 15:00",
-        "11/23/16 18:00",
-        "11/23/16 21:00",
-        "11/26/16 15:00",
-        "12/30/16 15:00",
-        "12/31/16 15:00",
-        "07/03/17 18:00",
-        "07/07/17 15:00"
+        "09/02/16 00:00",
+        "09/05/16 00:00",
+        "10/10/16 00:00",
+        "11/24/16 00:00",
+        "11/25/16 00:00",
+        "12/23/16 00:00",
+        "01/03/17 00:00",
+        "01/20/17 00:00",
+        "02/01/17 00:00",
+        "02/03/17 00:00",
+        "02/24/17 00:00"
       ],
       "element": "#interface"
      }
     },
     {
-      "name": "parseDate",
-      "update": "round((toDate(datetime + ' GMT') - 1451617200000) / (3 * 3600 * 1000))"
+      "name": "parseDate",                          
+      "update": "round((toDate(datetime + ' GMT') - 1451617200000) / (3 * 3600 * 1000))",
+      "description": "parsed value of dropdown anomaly"
     },
     {
       "name": "numericDomain",
-      "value": [1456, 5847]
+      "value": [1456, 5847],
+      "description": "overal timeline domain"
     },
     {
       "name": "time_on_hover",
@@ -491,7 +488,8 @@
     
     {
       "name": "time",
-      "value": 2932,
+      "value": 1959,
+      "description": "main time state value",
       "on": [
         {
           "events": "[@timeSelect:mousedown, window:mouseup] > window:mousemove!",
@@ -508,19 +506,19 @@
         },
         {
          "events": "@next:click",
-         "update": "clamp(time + 1, numericDomain[0], numericDomain[1])"
+         "update": "clamp(time + 8, numericDomain[0], numericDomain[1])"
         },
         {
          "events": "@previous:click",
-         "update": "clamp(time - 1, numericDomain[0], numericDomain[1])"
+         "update": "clamp(time - 8, numericDomain[0], numericDomain[1])"
         },
         {
           "events": {"source":"window", "type":"keydown", "filter": ["event.key == 'ArrowLeft'"]},
-          "update": "clamp(time - 1, numericDomain[0], numericDomain[1])"
+          "update": "clamp(time - 8, numericDomain[0], numericDomain[1])"
         },
         {
           "events": {"source":"window", "type":"keydown", "filter": ["event.key == 'ArrowRight'"]},
-          "update": "clamp(time + 1, numericDomain[0], numericDomain[1])"
+          "update": "clamp(time + 8, numericDomain[0], numericDomain[1])"
         },
         {
           "events": {"signal": "datetime"},

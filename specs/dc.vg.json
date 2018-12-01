@@ -624,7 +624,7 @@
             "signal": "[35, width - 35]"
           },
           "type": "time",
-          "domain": { "signal": "[datetime(2016, 6,1, 3), datetime(2018,0,1, 0)]"}
+          "domain": { "signal": "[datetime(2016, 0,1, 0), datetime(2017,11,31, 0)]"}
         }
   ]
 }

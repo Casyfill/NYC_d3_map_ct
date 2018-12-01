@@ -12,14 +12,33 @@
   },
   "data": [
     {
-        "name": "boundaries",
-        "url": "data/taipei/taipei_ct_topo.json",
-        "format": {"feature": "taipei_ct", "type":"topojson"}
+      "format": {
+        "type": "csv"
+      },
+      "name": "data",
+      "url": "data/nyc/tooltips.csv"
     },
     {
-      "name": "stations",
-      "url": "data/taipei/taipei_stations2.json",
-      "format": {"type": "json", "property": "features"}
+      "format": {
+        "feature": "taxi_zones",
+        "type": "topojson"
+      },
+      "name": "zones",
+      "transform": [
+        {
+          "fields": [
+            "properties.OBJECTID"
+          ],
+          "from": "data",
+          "key": "OBJECTID",
+          "type": "lookup",
+          "values": [
+            "work",
+            "live"
+          ]
+        }
+      ],
+      "url": "data/nyc/taxi_zones.topojson.json"
     },
     {
       "format": {
@@ -27,6 +46,11 @@
       },
       "name": "anomals",
       "transform": [
+        {
+          "as": "OBJECTID",
+          "expr": "toNumber(datum.OBJECTID)",
+          "type": "formula"
+        },
         {
           "as": "time",
           "expr": "toNumber(datum.time)",
@@ -38,7 +62,7 @@
           "type": "formula"
         }
       ],
-      "url": "data/taipei/anomaliesTaipei_processed.csv"
+      "url": "data/nyc_new/anomals_nyc2.csv"
     },
     {
       "name": "anomals_filtered",
@@ -52,11 +76,11 @@
     },
     {
       "name": "merged_zones",
-      "source": "stations",
+      "source": "zones",
       "transform": [
         {
           "fields": [
-            "properties.stop_id"
+            "properties.OBJECTID"
           ],
           "from": "anomals_filtered",
           "key": "OBJECTID",
@@ -90,7 +114,7 @@
     },
     {
       "name": "significant_dates",
-      "url": "data/taipei/dates.csv",
+      "url": "data/nyc_new/dates.csv",
       "format": {
         "type": "csv"
       }
@@ -121,24 +145,13 @@
       ],
       "marks": [
         {
-          "from": {"data": "boundaries"},
-          "type": "shape",
-          "name": "borders",
-          "transform": [{"projection": "projection", "type": "geoshape"}],
-          "encode": {
-            "enter": {
-              "stroke": {"value":"black"}
-            }
-          }
-        },
-        {
           "encode": {
             "enter": {
               "stroke": {
                 "value": "#636b6d"
               },
               "tooltip": {
-                "signal": "{'title':datum.properties.stop_name, 'work here':datum.work, 'live here':datum.live }"
+                "signal": "{'title':datum.properties.zone, 'work here':datum.work, 'live here':datum.live }"
               }
             },
             "hover": {
@@ -180,7 +193,7 @@
           "encode": {
             "enter": {
               "tooltip": {
-                "signal": "{'title':datum.properties.stop_name, 'value':format(datum.value, '.1e'), 'work here':datum.work, 'live here':datum.live }"
+                "signal": "{'title':datum.properties.zone, 'value':format(datum.value, '.4f'), 'work here':datum.work, 'live here':datum.live }"
               }
             },
             "hover": {
@@ -230,10 +243,18 @@
       "type": "group",
       "projections": [
         {
+          "center": [
+            -73.99,
+            42
+          ],
+          "fit": {
+            "signal": "[data('zones'), data('zones')]"
+          },
           "name": "projection",
-          "type": "mercator",
-          "fit": {"signal": "[data('boundaries'), data('boundaries')]"},
-          "size": {"signal": "[width, height]"}
+          "size": {
+            "signal": "[width-100, height-100]"
+          },
+          "type": "mercator"
         }
       ]
     },
@@ -267,6 +288,8 @@
           "domain": true,
           "labelPadding": 10,
           "ticks": true,
+          "tickColor": "black",
+          "tickOffset": 0,
           "tickSize": 10,
           "offset": -20,
           "title": {"signal": "time_formatted"},
@@ -278,13 +301,9 @@
               }  
             },
             "domain": {
-                "enter": {
-                    "domainColor": {"value": "black"},
-                    "domainWidth": {"value": 1}
-                },
-                "update": {
-                    "stroke": {"value": "black"}
-                }  
+              "update": {
+                "stroke": {"value": "black"}
+              }  
             },
             "title": {
               "update": {
@@ -357,8 +376,8 @@
           "encode": {
             "enter": {
               "x" : { "scale": "timeScale", "field": "time"},
-              "y":   { "scale": "sd_tick_height_lower", "field": "stations"},
-              "y2": { "scale": "sd_tick_height_highter", "field": "stations"},
+              "y":   { "scale": "sd_tick_height_lower", "field": "OBJECTID"},
+              "y2": { "scale": "sd_tick_height_highter", "field": "OBJECTID"},
 
               "zindex": {"value": 0.5}
             },
@@ -416,23 +435,35 @@
   },
   "signals": [
     {"name": "datetime",
+      "forse": true,
      "bind": {
       "input": "select",
       "options": [
-        "01/01/17 00:00",
-        "01/29/17 00:00"
+        "11/09/16 06:00",
+        "11/11/16 06:00",
+        "11/11/16 12:00",
+        "11/11/16 21:00",
+        "11/12/16 21:00",
+        "11/23/16 15:00",
+        "11/23/16 18:00",
+        "11/23/16 21:00",
+        "11/26/16 15:00",
+        "12/30/16 15:00",
+        "12/31/16 15:00",
+        "07/03/17 18:00",
+        "07/07/17 15:00"
       ],
-      "element": "#interface"
+      "element": "#interface",
+      "name": "datetime"
      }
     },
     {
       "name": "parseDate",
-      "update": "round((toDate(datetime + ' GMT') - 1483228800000) / (24 * 3600 * 1000))"
+      "update": "round((toDate(datetime + ' GMT') - 1451606400000) / (24 * 3600 * 1000))"
     },
     {
       "name": "numericDomain",
-      "value": [0, 730],
-      "description": "overal timeline domain"
+      "value": [244, 730]
     },
     {
       "name": "time_on_hover",
@@ -454,11 +485,11 @@
     },
     {
       "name": "time_formatted",
-      "update": "utcFormat(timer, '%A %b %d %Y, %H:00')"
+      "update": "utcFormat(timer, '%A %b %d %Y')"
     },
 
     {"name": "timer",
-     "update": "time * 24 * 3600 * 1000 + 1483228800000"
+     "update": "time * 24 * 3600 * 1000 + 1451606400000"
     },
 
     {
@@ -473,7 +504,7 @@
     
     {
       "name": "time",
-      "value": 0,
+      "value": 244,
       "on": [
         {
           "events": "[@timeSelect:mousedown, window:mouseup] > window:mousemove!",
@@ -507,7 +538,7 @@
         {
           "events": {"signal": "datetime"},
           "force": true,
-          "update": "round((toDate(datetime + ' GMT') - 1483228800000) / (24 * 3600 * 1000))"
+          "update": "round((toDate(datetime + ' GMT') - 1451606400000) / (24 * 3600 * 1000))"
         }
 
       ]
@@ -528,7 +559,7 @@
     { 
       "clamp": true,
       "domain": [
-        0.1,
+        0.01,
         0
       ],
       "name": "color",
@@ -541,17 +572,17 @@
       "zero": false
     },
     {
-      "name": "sd_tick_height_lower",
-      "domain": {"data": "significant_dates", "field": "stations"},
-      "range": [35, 45],
-      "type": "linear"
-    },
-    {
-      "name": "sd_tick_height_highter",
-      "domain": {"data": "significant_dates", "field": "stations"},
-      "range": [25, 15],
-      "type": "linear"
-    },
+        "name": "sd_tick_height_lower",
+        "domain": {"data": "significant_dates", "field": "OBJECTID"},
+        "range": [35, 45],
+        "type": "linear"
+      },
+      {
+        "name": "sd_tick_height_highter",
+        "domain": {"data": "significant_dates", "field": "OBJECTID"},
+        "range": [25, 15],
+        "type": "linear"
+      },
         {
           "domain": {"signal": "numericDomain"},
           "name": "timeScale",
@@ -566,12 +597,11 @@
         {
           "name": "realTimeScale",
           "clamp": true,
-          "nice": false,
           "range": {
             "signal": "[35, width - 35]"
           },
           "type": "time",
-          "domain": { "signal": "[datetime(2017, 0,1, 0), datetime(2019,0,1, 0)]"}
+          "domain": { "signal": "[datetime(2016, 8,0, 0), datetime(2018,0,1, 0)]"}
         }
   ]
 }

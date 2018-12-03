@@ -17,7 +17,7 @@
         "type": "topojson"
       },
       "name": "zones",
-      "url": "data/dc/zipcodes.topojson.json"
+      "url": "data/dc/zipcodes2.topojson.json"
     },
     {
       "format": {

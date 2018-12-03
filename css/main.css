@@ -170,6 +170,10 @@ span.citylink > a{
   font-size: 10px;
 }
 
+span.active > a{
+  background: lightseagreen;
+}
+
 input[type="range"] {
     -webkit-appearance: slider-horizontal;
     color: rgb(144, 144, 144);

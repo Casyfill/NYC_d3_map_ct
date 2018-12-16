@@ -358,7 +358,11 @@
               "zindex": {"value": 0.5},
               "tooltip": {
                 "signal": "{'title':datum.datetime, 'event': datum.description }"
-              }
+              },
+              "stroke": [{
+                "test": "length(datum.description) > 2",
+                "value": "orange"
+              }, {"value": "darkred"}]
             },
             "update": {
               "stroke": {"value": "darkred"},
@@ -382,7 +386,7 @@
               "y": {
                 "value": 30
               },
-              "size": { "value": 200},
+              "size": { "value": 110},
               "stroke": {"value": "black"}
             },
             "update": {
@@ -598,14 +602,14 @@
     },
     {
       "name": "sd_tick_height_lower",
-      "domain": {"data": "significant_dates", "field": "stations"},
-      "range": [35, 45],
+      "domain": {"data": "significant_dates", "field": "OBJECTID"},
+      "range": [40, 60],
       "type": "linear"
     },
     {
       "name": "sd_tick_height_highter",
-      "domain": {"data": "significant_dates", "field": "stations"},
-      "range": [25, 15],
+      "domain": {"data": "significant_dates", "field": "OBJECTID"},
+      "range": [20, 0],
       "type": "linear"
     },
         {

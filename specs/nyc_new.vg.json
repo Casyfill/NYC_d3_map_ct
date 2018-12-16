@@ -155,7 +155,7 @@
                 "value": "#636b6d"
               },
               "tooltip": {
-                "signal": "{'title':datum.properties.zone, 'work here':datum.work, 'live here':datum.live, 'Inward Mobility':format(datum.MobilityIn, ',.0f'), 'Outward Mobilty':format(datum.MobilityOut, ',.0f') }"
+                "signal": "{'title':datum.properties.zone, 'work here':datum.work, 'live here':datum.live}"
               }
             },
             "hover": {
@@ -197,7 +197,7 @@
           "encode": {
             "enter": {
               "tooltip": {
-                "signal": "{'title':datum.properties.zone, 'value':format(datum.value, '.4f'), 'work here':datum.work, 'live here':datum.live }"
+                "signal": "{'title':datum.properties.zone, 'value':format(datum.value, '.4f'), 'work here':datum.work, 'live here':datum.live, 'Inward Mobility':format(datum.MobilityIn, ',.0f'), 'Outward Mobilty':format(datum.MobilityOut, ',.0f'), 'SNODA': format(datum.SNODA, '.3f')  }"
               }
             },
             "hover": {
@@ -409,7 +409,7 @@
               "y": {
                 "value": 30
               },
-              "size": { "value": 200},
+              "size": { "value": 110},
               "stroke": {"value": "black"}
             },
             "update": {
@@ -564,10 +564,7 @@
   "scales": [
     { 
       "clamp": true,
-      "domain": [
-        0.01,
-        0
-      ],
+      "domain": {"data":"anomals", "field":"value"},
       "name": "color",
       "nice": true,
       "range": [
@@ -580,13 +577,13 @@
     {
         "name": "sd_tick_height_lower",
         "domain": {"data": "significant_dates", "field": "OBJECTID"},
-        "range": [35, 45],
+        "range": [40, 60],
         "type": "linear"
       },
       {
         "name": "sd_tick_height_highter",
         "domain": {"data": "significant_dates", "field": "OBJECTID"},
-        "range": [25, 15],
+        "range": [20, 0],
         "type": "linear"
       },
         {

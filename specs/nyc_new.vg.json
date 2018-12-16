@@ -142,9 +142,7 @@
           "fill": "color",
           "orient": "top-left",
           "title": "Anomality index",
-          "type": "gradient",
-          "gradientThickness": 50,
-          "gradientLength": 300
+          "type": "gradient"
         }
       ],
       "marks": [
@@ -380,8 +378,8 @@
           "encode": {
             "enter": {
               "x" : { "scale": "timeScale", "field": "time"},
-              "y":   { "scale": "sd_tick_height_lower", "field": "OBJECTID"},
-              "y2": { "scale": "sd_tick_height_highter", "field": "OBJECTID"},
+              "y":   { "scale": "sd_tick_height_lower", "field": "stations"},
+              "y2": { "scale": "sd_tick_height_highter", "field": "stations"},
               "tooltip": {
                 "signal": "{'title':datum.description, 'date':datum.datetime  }"
               },
@@ -579,13 +577,13 @@
     },
     {
         "name": "sd_tick_height_lower",
-        "domain": {"data": "significant_dates", "field": "OBJECTID"},
+        "domain": {"data": "significant_dates", "field": "stations"},
         "range": [40, 60],
         "type": "linear"
       },
       {
         "name": "sd_tick_height_highter",
-        "domain": {"data": "significant_dates", "field": "OBJECTID"},
+        "domain": {"data": "significant_dates", "field": "stations"},
         "range": [20, 0],
         "type": "linear"
       },

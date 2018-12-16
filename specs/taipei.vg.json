@@ -38,7 +38,7 @@
           "type": "formula"
         }
       ],
-      "url": "data/taipei/anomaliesTaipei_processed.csv"
+      "url": "data/taipei/anomalies_taipei.csv"
     },
     {
       "name": "anomals_filtered",
@@ -63,7 +63,9 @@
           "type": "lookup",
           "values": [
             "time",
-            "value"
+            "value",
+            "MobilityOut",
+            "MobilityIn"
           ]
         }
       ]
@@ -113,7 +115,7 @@
         {
           "fill": "color",
           "orient": "top-left",
-          "title": "Anomality index (p-value)",
+          "title": "Anomality index",
           "type": "gradient",
           "gradientThickness": 50,
           "gradientLength": 300
@@ -138,7 +140,7 @@
                 "value": "#636b6d"
               },
               "tooltip": {
-                "signal": "{'title':datum.properties.stop_name, 'work here':datum.work, 'live here':datum.live }"
+                "signal": "{'title':datum.properties.stop_name }"
               }
             },
             "hover": {
@@ -180,7 +182,7 @@
           "encode": {
             "enter": {
               "tooltip": {
-                "signal": "{'title':datum.properties.stop_name, 'value':format(datum.value, '.1e'), 'work here':datum.work, 'live here':datum.live }"
+                "signal": "{'title':datum.properties.stop_name, 'line': slice(datum.properties.stop_id, 0, 2), 'value':format(datum.value, '.4f'), 'Inward Mobility':format(datum.MobilityIn, ',.0f'), 'Outward Mobilty':format(datum.MobilityOut, ',.0f') }"
               }
             },
             "hover": {
@@ -359,8 +361,10 @@
               "x" : { "scale": "timeScale", "field": "time"},
               "y":   { "scale": "sd_tick_height_lower", "field": "stations"},
               "y2": { "scale": "sd_tick_height_highter", "field": "stations"},
-
-              "zindex": {"value": 0.5}
+              "zindex": {"value": 0.5},
+              "tooltip": {
+                "signal": "{'title':datum.description, 'date':datum.datetime }"
+              }
             },
             "update": {
               "stroke": {"value": "darkred"},
@@ -527,10 +531,7 @@
   "scales": [
     { 
       "clamp": true,
-      "domain": [
-        0.1,
-        0
-      ],
+      "domain": {"data":"anomals", "field":"value"},
       "name": "color",
       "nice": true,
       "range": [

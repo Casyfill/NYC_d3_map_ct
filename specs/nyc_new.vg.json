@@ -16,7 +16,7 @@
         "type": "csv"
       },
       "name": "data",
-      "url": "data/nyc/tooltips.csv"
+      "url": "data/nyc_new/tooltips.csv"
     },
     {
       "format": {
@@ -35,6 +35,7 @@
           "values": [
             "work",
             "live"
+
           ]
         }
       ],
@@ -62,7 +63,7 @@
           "type": "formula"
         }
       ],
-      "url": "data/nyc_new/anomals_nyc2.csv"
+      "url": "data/nyc_new/anomalies_nyc.csv"
     },
     {
       "name": "anomals_filtered",
@@ -87,7 +88,10 @@
           "type": "lookup",
           "values": [
             "time",
-            "value"
+            "value",
+            "MobilityIn",
+            "MobilityOut",
+            "SNODA"
           ]
         }
       ]
@@ -137,7 +141,7 @@
         {
           "fill": "color",
           "orient": "top-left",
-          "title": "Anomality index (p-value)",
+          "title": "Anomality index",
           "type": "gradient",
           "gradientThickness": 50,
           "gradientLength": 300
@@ -151,7 +155,7 @@
                 "value": "#636b6d"
               },
               "tooltip": {
-                "signal": "{'title':datum.properties.zone, 'work here':datum.work, 'live here':datum.live }"
+                "signal": "{'title':datum.properties.zone, 'work here':datum.work, 'live here':datum.live, 'Inward Mobility':format(datum.MobilityIn, ',.0f'), 'Outward Mobilty':format(datum.MobilityOut, ',.0f') }"
               }
             },
             "hover": {
@@ -378,7 +382,9 @@
               "x" : { "scale": "timeScale", "field": "time"},
               "y":   { "scale": "sd_tick_height_lower", "field": "OBJECTID"},
               "y2": { "scale": "sd_tick_height_highter", "field": "OBJECTID"},
-
+              "tooltip": {
+                "signal": "{'title':datum.datetime, 'event': datum.description }"
+              },
               "zindex": {"value": 0.5}
             },
             "update": {

@@ -41,7 +41,7 @@
           "type": "formula"
         } 
       ],
-      "url": "data/dc/dc_anomalies_processed2.csv"
+      "url": "data/dc/anomalies_dc.csv"
     },
     {
       "name": "anomals_filtered",
@@ -66,7 +66,9 @@
           "type": "lookup",
           "values": [
             "time",
-            "value"
+            "value",
+            "MobilityIn",
+            "MobilityOut"
           ]
         }
       ]
@@ -116,7 +118,7 @@
         {
           "fill": "color",
           "orient": "top-left",
-          "title": "Anomality index (p-value)",
+          "title": "Anomality index",
           "type": "gradient"
         }
       ],
@@ -128,7 +130,7 @@
                 "value": "#636b6d"
               },
               "tooltip": {
-                "signal": "{'title':datum.properties.ZIPCODE }"
+                "signal": "{'title':datum.properties.ZIPCODE, 'Population': format(datum.properties.POP_2010, ',.0f') }"
               }
             },
             "hover": {
@@ -170,7 +172,7 @@
           "encode": {
             "enter": {
               "tooltip": {
-                "signal": "{'title':datum.properties.ZIPCODE, 'value':format(datum.value, '.4f') }"
+                "signal": "{'title':datum.properties.ZIPCODE, 'value':format(datum.value, '.3f'), 'Inward Mobility':format(datum.MobilityIn, ',.0f'), 'Outward Mobilty':format(datum.MobilityOut, ',.0f'), 'Population': format(datum.properties.POP_2010, ',.0f') }"
               }
             },
             "hover": {
@@ -351,9 +353,12 @@
           "encode": {
             "enter": {
               "x" : { "scale": "timeScale", "field": "time"},
-              "y":   { "scale": "sd_tick_height_lower", "field": "zips"},
-              "y2": { "scale": "sd_tick_height_highter", "field": "zips"},
-              "zindex": {"value": 0.5}
+              "y":   { "scale": "sd_tick_height_lower", "field": "stations"},
+              "y2": { "scale": "sd_tick_height_highter", "field": "stations"},
+              "zindex": {"value": 0.5},
+              "tooltip": {
+                "signal": "{'title':datum.datetime, 'event': datum.description }"
+              }
             },
             "update": {
               "stroke": {"value": "darkred"},
@@ -581,10 +586,7 @@
   "scales": [
     { 
       "clamp": true,
-      "domain": [
-        0.1,
-        0
-      ],
+      "domain": {"data":"anomals", "field":"value"},
       "name": "color",
       "nice": true,
       "range": [
@@ -596,13 +598,13 @@
     },
     {
       "name": "sd_tick_height_lower",
-      "domain": {"data": "significant_dates", "field": "zips"},
+      "domain": {"data": "significant_dates", "field": "stations"},
       "range": [35, 45],
       "type": "linear"
     },
     {
       "name": "sd_tick_height_highter",
-      "domain": {"data": "significant_dates", "field": "zips"},
+      "domain": {"data": "significant_dates", "field": "stations"},
       "range": [25, 15],
       "type": "linear"
     },

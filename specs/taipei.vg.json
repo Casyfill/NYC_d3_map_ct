@@ -364,14 +364,13 @@
               "zindex": {"value": 0.5},
               "tooltip": {
                 "signal": "{'title':datum.description, 'date':datum.datetime }"
-              },
+              }
+            },
+            "update": {
               "stroke": [{
                 "test": "length(datum.description) > 2",
                 "value": "orange"
-              }, {"value": "darkred"}]
-            },
-            "update": {
-              "stroke": {"value": "darkred"},
+              }, {"value": "darkred"}],
               "strokeWidth": {"value": 2}
             },
             "hover": {

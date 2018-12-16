@@ -383,12 +383,15 @@
               "y":   { "scale": "sd_tick_height_lower", "field": "OBJECTID"},
               "y2": { "scale": "sd_tick_height_highter", "field": "OBJECTID"},
               "tooltip": {
-                "signal": "{'title':datum.datetime, 'event': datum.description }"
+                "signal": "{'title':datum.description, 'date':datum.datetime  }"
               },
               "zindex": {"value": 0.5}
             },
             "update": {
-              "stroke": {"value": "darkred"},
+              "stroke": [{
+                "test": "length(datum.description) > 2",
+                "value": "orange"
+              }, {"value": "darkred"}],
               "strokeWidth": {"value": 2}
             },
             "hover": {
